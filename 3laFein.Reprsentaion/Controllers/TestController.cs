@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,15 @@ namespace _3laFein.Reprsentaion.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILoggerManager _logger;
+        private readonly IEmailSender _emailSender;
 
-        public TestController(ILoggerManager logger) => _logger = logger;
+        public TestController(ILoggerManager logger, IEmailSender emailSender)
+        {
+            _logger = logger;
+            _emailSender = emailSender;
+        }
 
-        [HttpGet]
+        [HttpGet("log")]
         public IActionResult TestLogging()
         {
             _logger.LogInfo("TestMessage.");
@@ -24,6 +30,16 @@ namespace _3laFein.Reprsentaion.Controllers
             _logger.LogDebug("TestMessage.");
             _logger.LogError("TestMessage.");
 
+            return Ok();
+        }
+
+        [HttpGet("email")]
+        public async Task<IActionResult> TestEmailAsync()
+        {
+            var message = new Message(["ibnbatotoa@gmail.com"], "test", "Ibn Batota Applicaition.");
+            var messageAsync = new Message(["ibnbatotoa@gmail.com"], "test-async", "Ibn Batota Applicaition Asynchronous.");
+            _emailSender.SendEmail(message);
+            await _emailSender.SendEmailAsync(messageAsync);
             return Ok();
         }
     }

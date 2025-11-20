@@ -9,6 +9,7 @@ builder.Services.ConfigCors();
 builder.Services.ConfigIIS();
 builder.Services.ConfigSqlServer(builder.Configuration);
 builder.Services.ConfigLoggerService();
+builder.Services.ConfigEmailService(builder.Configuration);
 
 builder.Services.AddControllers();
 

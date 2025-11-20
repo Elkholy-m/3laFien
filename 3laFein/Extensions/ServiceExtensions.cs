@@ -1,8 +1,11 @@
 ﻿using Contracts;
+using EmailService;
+using Entities.Models;
 using LoggerService;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using Repository;
+using System.Runtime.Serialization;
 using System.Security;
 
 namespace _3laFein.Extensions
@@ -46,6 +49,14 @@ namespace _3laFein.Extensions
         {
             LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             services.AddSingleton<ILoggerManager, LoggerManager>();
+        }
+
+        public static void ConfigEmailService(this IServiceCollection services, IConfiguration config)
+        {
+            var emailConfig = config.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            emailConfig!.Password = Environment.GetEnvironmentVariable("IbnBatotaPass");
+            services.AddSingleton(emailConfig!);
+            services.AddScoped<IEmailSender, EmailSender>();
         }
     }
 }
