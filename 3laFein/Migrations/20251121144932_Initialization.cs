@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _3laFein.Migrations
 {
     /// <inheritdoc />
-    public partial class Intialization : Migration
+    public partial class Initialization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -204,6 +204,9 @@ namespace _3laFein.Migrations
                     PlaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Latitude = table.Column<float>(type: "real", nullable: false),
                     Longitude = table.Column<float>(type: "real", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -212,18 +215,11 @@ namespace _3laFein.Migrations
                     DiscountPercentage = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Places", x => x.PlaceId);
-                    table.ForeignKey(
-                        name: "FK_Places_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Places_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -288,27 +284,6 @@ namespace _3laFein.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlaceAddresses",
-                columns: table => new
-                {
-                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PlaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlaceAddresses", x => x.AddressId);
-                    table.ForeignKey(
-                        name: "FK_PlaceAddresses_Places_PlaceId",
-                        column: x => x.PlaceId,
-                        principalTable: "Places",
-                        principalColumn: "PlaceId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PlaceImages",
                 columns: table => new
                 {
@@ -322,6 +297,31 @@ namespace _3laFein.Migrations
                     table.PrimaryKey("PK_PlaceImages", x => x.ImageId);
                     table.ForeignKey(
                         name: "FK_PlaceImages_Places_PlaceId",
+                        column: x => x.PlaceId,
+                        principalTable: "Places",
+                        principalColumn: "PlaceId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlaceOwners",
+                columns: table => new
+                {
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlaceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlaceOwners", x => new { x.PlaceId, x.OwnerId });
+                    table.ForeignKey(
+                        name: "FK_PlaceOwners_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PlaceOwners_Places_PlaceId",
                         column: x => x.PlaceId,
                         principalTable: "Places",
                         principalColumn: "PlaceId",
@@ -534,24 +534,19 @@ namespace _3laFein.Migrations
                 column: "PlaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlaceAddresses_PlaceId",
-                table: "PlaceAddresses",
-                column: "PlaceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PlaceImages_PlaceId",
                 table: "PlaceImages",
                 column: "PlaceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PlaceOwners_OwnerId",
+                table: "PlaceOwners",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Places_CategoryId",
                 table: "Places",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Places_UserId",
-                table: "Places",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlaceSchedules_PlaceId",
@@ -612,10 +607,10 @@ namespace _3laFein.Migrations
                 name: "GroupsBooking");
 
             migrationBuilder.DropTable(
-                name: "PlaceAddresses");
+                name: "PlaceImages");
 
             migrationBuilder.DropTable(
-                name: "PlaceImages");
+                name: "PlaceOwners");
 
             migrationBuilder.DropTable(
                 name: "PlaceSchedules");
@@ -636,10 +631,10 @@ namespace _3laFein.Migrations
                 name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Places");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Places");
 
             migrationBuilder.DropTable(
                 name: "Categories");

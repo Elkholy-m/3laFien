@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -8,19 +7,18 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class PlaceAddress
+    public class PlaceOwner
     {
-        [Key]
-        public Guid AddressId { get; set; }
-        public string? Country { get; set; }
-        public string? City { get; set; }
-        public string? Street { get; set; }
+        public DateTime AddedAt { get; set; }
+
+        [ForeignKey(nameof(Owner))]
+        public Guid OwnerId { get; set; }
 
         [ForeignKey(nameof(Place))]
         public Guid PlaceId { get; set; }
 
-        // Navigational Properties
+        //Navigational Properties
+        public User? Owner { get; set; }
         public Place? Place { get; set; }
-
     }
 }

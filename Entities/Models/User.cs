@@ -24,7 +24,7 @@ namespace Entities.Models
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<GroupMember>? GroupMembers { get; set; }
         public ICollection<Group>? Groups { get; set; }
-        public ICollection<Place>? Places { get; set; }
+        public ICollection<PlaceOwner>? PlaceOwners { get; set; }
 
     }
 }

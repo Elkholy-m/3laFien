@@ -14,6 +14,9 @@ namespace Entities.Models
         public Guid PlaceId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public string? Country { get; set; }
+        public string? City { get; set; }
+        public string? Street { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }
         public decimal Price { get; set; }
@@ -23,23 +26,19 @@ namespace Entities.Models
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
-
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
         // Navigational Properties
-        public User? User { get; set; }
         public Category? Category { get; set; }
         public ICollection<FavouritePlaces>? FavouritePlaces { get; set; }
         public ICollection<Booking>? Bookings { get; set; }
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<Group>? Groups { get; set; }
         public ICollection<GroupBooking>? GroupBooking { get; set; }
-        public ICollection<PlaceAddress>? PlaceAddresses { get; set; }
         public ICollection<PlaceImage>? PlaceImages { get; set; }
         public ICollection<PlaceSchedule>? PlaceSchedules { get; set; }
+        public ICollection<PlaceOwner>? PlaceOwners { get; set; }
 
     }
 }

@@ -30,6 +30,7 @@ namespace Repository
             modelBuilder.ApplyConfiguration(new GruopMembersConfiguration());
             modelBuilder.ApplyConfiguration(new PlaceConfiguration());
             modelBuilder.ApplyConfiguration(new GruopConfiguration());
+            modelBuilder.ApplyConfiguration(new PlaceOwnerConfiguration());
             base.OnModelCreating(modelBuilder);
 
             // Loop through all relationships in the model
@@ -47,11 +48,11 @@ namespace Repository
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupBooking> GroupsBooking { get; set; }
         public DbSet<GroupMember> GroupMembers { get; set; }
-        public DbSet<PlaceAddress> PlaceAddresses { get; set; }
         public DbSet<PlaceImage> PlaceImages { get; set; }
         public DbSet<PlaceSchedule> PlaceSchedules { get; set; }
         public DbSet<Booking> UsersBooking { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<FavouritePlaces> FavoritePlaces { get; set; }
+        public DbSet<PlaceOwner> PlaceOwners { get; set; }
     }
 }

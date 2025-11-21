@@ -201,6 +201,12 @@ namespace _3laFein.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -230,44 +236,17 @@ namespace _3laFein.Migrations
                     b.Property<float>("Rate")
                         .HasColumnType("real");
 
+                    b.Property<string>("Street")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TotalReviews")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("PlaceId");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Places");
-                });
-
-            modelBuilder.Entity("Entities.Models.PlaceAddress", b =>
-                {
-                    b.Property<Guid>("AddressId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PlaceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AddressId");
-
-                    b.HasIndex("PlaceId");
-
-                    b.ToTable("PlaceAddresses");
                 });
 
             modelBuilder.Entity("Entities.Models.PlaceImage", b =>
@@ -290,6 +269,24 @@ namespace _3laFein.Migrations
                     b.HasIndex("PlaceId");
 
                     b.ToTable("PlaceImages");
+                });
+
+            modelBuilder.Entity("Entities.Models.PlaceOwner", b =>
+                {
+                    b.Property<Guid>("PlaceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PlaceId", "OwnerId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("PlaceOwners");
                 });
 
             modelBuilder.Entity("Entities.Models.PlaceSchedule", b =>
@@ -691,26 +688,7 @@ namespace _3laFein.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithMany("Places")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Entities.Models.PlaceAddress", b =>
-                {
-                    b.HasOne("Entities.Models.Place", "Place")
-                        .WithMany("PlaceAddresses")
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Place");
                 });
 
             modelBuilder.Entity("Entities.Models.PlaceImage", b =>
@@ -720,6 +698,25 @@ namespace _3laFein.Migrations
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("Entities.Models.PlaceOwner", b =>
+                {
+                    b.HasOne("Entities.Models.User", "Owner")
+                        .WithMany("PlaceOwners")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Models.Place", "Place")
+                        .WithMany("PlaceOwners")
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
 
                     b.Navigation("Place");
                 });
@@ -838,9 +835,9 @@ namespace _3laFein.Migrations
 
                     b.Navigation("Groups");
 
-                    b.Navigation("PlaceAddresses");
-
                     b.Navigation("PlaceImages");
+
+                    b.Navigation("PlaceOwners");
 
                     b.Navigation("PlaceSchedules");
 
@@ -857,7 +854,7 @@ namespace _3laFein.Migrations
 
                     b.Navigation("Groups");
 
-                    b.Navigation("Places");
+                    b.Navigation("PlaceOwners");
 
                     b.Navigation("Reviews");
 
