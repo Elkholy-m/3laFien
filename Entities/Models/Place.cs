@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class Place
+    public class Place : IHasCreatedAt, ISoftDelete
     {
         [Key]
         public Guid PlaceId { get; set; }
@@ -25,6 +25,7 @@ namespace Entities.Models
         public decimal DiscountPercentage { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime DeletedAt { get; set; }
 
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }

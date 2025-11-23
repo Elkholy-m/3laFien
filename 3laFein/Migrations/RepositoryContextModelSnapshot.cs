@@ -46,14 +46,14 @@ namespace _3laFein.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("BookingId");
 
                     b.HasIndex("PlaceId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("VisitorId");
 
                     b.ToTable("UsersBooking");
                 });
@@ -82,7 +82,7 @@ namespace _3laFein.Migrations
 
             modelBuilder.Entity("Entities.Models.FavouritePlaces", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PlaceId")
@@ -91,7 +91,7 @@ namespace _3laFein.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId", "PlaceId");
+                    b.HasKey("VisitorId", "PlaceId");
 
                     b.HasIndex("PlaceId");
 
@@ -105,6 +105,9 @@ namespace _3laFein.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -123,14 +126,14 @@ namespace _3laFein.Migrations
                     b.Property<Guid>("PlaceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("GroupId");
 
                     b.HasIndex("PlaceId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("VisitorId");
 
                     b.ToTable("Groups");
                 });
@@ -173,7 +176,7 @@ namespace _3laFein.Migrations
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsAdmin")
@@ -185,9 +188,9 @@ namespace _3laFein.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("GroupId", "UserId");
+                    b.HasKey("GroupId", "VisitorId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("VisitorId");
 
                     b.ToTable("GroupMembers");
                 });
@@ -208,6 +211,9 @@ namespace _3laFein.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -276,15 +282,15 @@ namespace _3laFein.Migrations
                     b.Property<Guid>("PlaceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OwnerId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("PlaceId", "OwnerId");
+                    b.HasKey("PlaceId", "VisitorId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("VisitorId");
 
                     b.ToTable("PlaceOwners");
                 });
@@ -326,7 +332,7 @@ namespace _3laFein.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("PlaceId")
@@ -335,14 +341,14 @@ namespace _3laFein.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ReviewId");
 
                     b.HasIndex("PlaceId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("VisitorId");
 
                     b.ToTable("Reviews");
                 });
@@ -356,18 +362,15 @@ namespace _3laFein.Migrations
                     b.Property<int>("Platform")
                         .HasColumnType("int");
 
-                    b.Property<string>("PlatformUsername")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("VisitorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("AccountId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("VisitorId");
 
                     b.ToTable("SocialAccounts");
                 });
@@ -385,7 +388,7 @@ namespace _3laFein.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -397,9 +400,6 @@ namespace _3laFein.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -452,6 +452,52 @@ namespace _3laFein.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Entities.Models.Visitor", b =>
+                {
+                    b.Property<Guid>("VisitorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("About")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Experience")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Interests")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Skills")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TourStyle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("VisitorId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Visitors");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -593,15 +639,15 @@ namespace _3laFein.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
                         .WithMany("Bookings")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("VisitorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Place");
 
-                    b.Navigation("User");
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Entities.Models.FavouritePlaces", b =>
@@ -612,15 +658,15 @@ namespace _3laFein.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
                         .WithMany("FavoritePlaces")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("VisitorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Place");
 
-                    b.Navigation("User");
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Entities.Models.Group", b =>
@@ -631,15 +677,15 @@ namespace _3laFein.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
                         .WithMany("Groups")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("VisitorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Place");
 
-                    b.Navigation("User");
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Entities.Models.GroupBooking", b =>
@@ -669,15 +715,15 @@ namespace _3laFein.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
                         .WithMany("GroupMembers")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("VisitorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Group");
 
-                    b.Navigation("User");
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Entities.Models.Place", b =>
@@ -704,21 +750,21 @@ namespace _3laFein.Migrations
 
             modelBuilder.Entity("Entities.Models.PlaceOwner", b =>
                 {
-                    b.HasOne("Entities.Models.User", "Owner")
-                        .WithMany("PlaceOwners")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Entities.Models.Place", "Place")
                         .WithMany("PlaceOwners")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
+                        .WithMany("PlaceOwners")
+                        .HasForeignKey("VisitorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Place");
+
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Entities.Models.PlaceSchedule", b =>
@@ -740,22 +786,33 @@ namespace _3laFein.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
                         .WithMany("Reviews")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("VisitorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Place");
 
-                    b.Navigation("User");
+                    b.Navigation("Visitor");
                 });
 
             modelBuilder.Entity("Entities.Models.SocialAccount", b =>
                 {
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.Visitor", "Visitor")
                         .WithMany("SocialAccounts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("VisitorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Visitor");
+                });
+
+            modelBuilder.Entity("Entities.Models.Visitor", b =>
+                {
+                    b.HasOne("Entities.Models.User", "User")
+                        .WithOne("Visitor")
+                        .HasForeignKey("Entities.Models.Visitor", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -845,6 +902,11 @@ namespace _3laFein.Migrations
                 });
 
             modelBuilder.Entity("Entities.Models.User", b =>
+                {
+                    b.Navigation("Visitor");
+                });
+
+            modelBuilder.Entity("Entities.Models.Visitor", b =>
                 {
                     b.Navigation("Bookings");
 

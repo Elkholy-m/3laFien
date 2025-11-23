@@ -1,0 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shared.DTO
+{
+    public record class VisitorDto(Guid VisitorId, string About, string Experience, string Skills,
+        string TourStyle, string Interests);
+}

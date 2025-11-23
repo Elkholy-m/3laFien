@@ -13,17 +13,7 @@ namespace Repository.Configurations
     {
         public void Configure(EntityTypeBuilder<FavouritePlaces> builder)
         {
-            builder.HasOne(fp => fp.User)
-                .WithMany(u => u.FavoritePlaces)
-                .HasForeignKey(fp => fp.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(fp => fp.Place)
-                .WithMany(u => u.FavouritePlaces)
-                .HasForeignKey(fp => fp.PlaceId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasKey(x => new { x.UserId, x.PlaceId });
+            builder.HasKey(x => new { x.VisitorId, x.PlaceId });
         }
     }
 }

@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class FavouritePlaces
+    public class FavouritePlaces : IHasAddedAt
     {
         public DateTime AddedAt { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
+        [ForeignKey(nameof(Visitor))]
+        public Guid VisitorId { get; set; }
 
         [ForeignKey(nameof(Place))]
         public Guid PlaceId { get; set; }
 
         // Navigational Properties
-        public User? User { get; set; }
+        public Visitor? Visitor { get; set; }
         public Place? Place { get; set; }
 
     }

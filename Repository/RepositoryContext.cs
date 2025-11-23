@@ -6,6 +6,7 @@ using Repository.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ namespace Repository
             modelBuilder.ApplyConfiguration(new PlaceOwnerConfiguration());
             base.OnModelCreating(modelBuilder);
 
-            // Loop through all relationships in the model
+            // Make all the relations restricted behaviour instead of cascaded
             foreach (var foreignKey in modelBuilder.Model
                 .GetEntityTypes()
                 .SelectMany(e => e.GetForeignKeys()))
@@ -42,6 +43,37 @@ namespace Repository
             }
         }
 
+        // Auditable logic for CreatedAt, AddedAt, JoinedAt ...etc
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach(var entry in ChangeTracker.Entries())
+            {
+                var entity = entry.Entity;
+                var state = entry.State;
+
+                if (state == EntityState.Added)
+                {
+                    if (entity is IHasAddedAt addedAt)
+                        addedAt.AddedAt = DateTime.UtcNow;
+
+                    if (entity is IHasCreatedAt createdAt)
+                        createdAt.CreatedAt = DateTime.UtcNow;
+
+                    if (entity is IHasJoinedAt joinedAt)
+                        joinedAt.JoinedAt = DateTime.UtcNow;
+                }
+
+                if (entity is ISoftDelete softDeletable && state == EntityState.Deleted)
+                {
+                    entry.State = EntityState.Modified;
+                    softDeletable.IsDeleted = true;
+                    softDeletable.DeletedAt = DateTime.UtcNow;
+                }
+            }
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        public DbSet<Visitor> Visitors { get; set; }
         public DbSet<SocialAccount> SocialAccounts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Place> Places { get; set; }

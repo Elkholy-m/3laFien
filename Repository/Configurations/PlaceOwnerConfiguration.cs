@@ -13,7 +13,7 @@ namespace Repository.Configurations
     {
         public void Configure(EntityTypeBuilder<PlaceOwner> builder)
         {
-            builder.HasKey(x => new { x.PlaceId, x.OwnerId });
+            builder.HasKey(x => new { x.PlaceId, x.VisitorId });
         }
     }
 }

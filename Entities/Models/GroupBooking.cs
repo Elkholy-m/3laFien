@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class GroupBooking
+    public class GroupBooking : IHasCreatedAt
     {
         public Guid GroupBookingId { get; set; }
         public DateTime? BookingDate { get; set; }

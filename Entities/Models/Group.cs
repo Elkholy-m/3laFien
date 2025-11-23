@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class Group
+    public class Group : IHasCreatedAt, ISoftDelete
     {
         public Guid GroupId { get; set; }
         public string? Name { get; set; }
@@ -15,16 +15,17 @@ namespace Entities.Models
         public decimal DiscountPercentage { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime DeletedAt { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
+        [ForeignKey(nameof(Visitor))]
+        public Guid VisitorId { get; set; }
 
         [ForeignKey(nameof(Place))]
         public Guid PlaceId { get; set; }
 
 
         // Navigational Properties
-        public User? User { get; set; }
+        public Visitor? Visitor { get; set; }
         public Place? Place { get; set; }
         public ICollection<GroupMember>? GroupMembers { get; set; }
         public ICollection<GroupBooking>? GroupBookings { get; set; }

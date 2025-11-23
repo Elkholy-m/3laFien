@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class PlaceOwner
+    public class PlaceOwner : IHasAddedAt
     {
         public DateTime AddedAt { get; set; }
 
-        [ForeignKey(nameof(Owner))]
-        public Guid OwnerId { get; set; }
+        [ForeignKey(nameof(Visitor))]
+        public Guid VisitorId { get; set; }
 
         [ForeignKey(nameof(Place))]
         public Guid PlaceId { get; set; }
 
         //Navigational Properties
-        public User? Owner { get; set; }
+        public Visitor? Visitor { get; set; }
         public Place? Place { get; set; }
     }
 }

@@ -15,13 +15,15 @@ namespace Entities.Models
         public Guid AccountId { get; set; }
 
         public Platforms Platform { get; set; }
-        public string? PlatformUsername { get; set; }
         public string? Url { get; set; }
 
-        [ForeignKey("User")]
-        public Guid UserId { get; set; }
+        [NotMapped]
+        public string? PlatformUsername => ExtractUrlHelper.ExtractUsername(Platform, Url!);
+
+        [ForeignKey(nameof(Visitor))]
+        public Guid VisitorId { get; set; }
 
         // Navigational Property
-        public User? User { get; set; }
+        public Visitor? Visitor { get; set; }
     }
 }

@@ -1,7 +1,11 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Service.Contracts;
+using Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +20,13 @@ namespace _3laFein.Reprsentaion.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILoggerManager _logger;
+        private readonly UserManager<User> _userManager;
         private readonly IEmailSender _emailSender;
 
-        public TestController(ILoggerManager logger, IEmailSender emailSender)
+        public TestController(ILoggerManager logger, UserManager<User> userManager, IEmailSender emailSender)
         {
             _logger = logger;
+            _userManager = userManager;
             _emailSender = emailSender;
         }
 
@@ -43,6 +49,27 @@ namespace _3laFein.Reprsentaion.Controllers
             _emailSender.SendEmail(message);
             await _emailSender.SendEmailAsync(messageAsync);
             return Ok();
+        }
+
+        [HttpPost("user")]
+        public async Task<IActionResult> AddDummyUser(dummyUser dummyUser)
+        {
+            var user = new User()
+            {
+                FirstName = dummyUser.FirstName,
+                LastName = dummyUser.LastName,
+                Email = dummyUser.Email,
+                UserName = dummyUser.Email
+            };
+            var result = await _userManager.CreateAsync(user, dummyUser.Password!);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("error", error.Description);
+
+                return BadRequest();
+            }
+            return Ok(user.Id);
         }
     }
 }

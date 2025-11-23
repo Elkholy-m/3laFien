@@ -1,5 +1,8 @@
 ﻿using Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Linq;
+using System;
 
 namespace Repository
 {
@@ -13,9 +16,8 @@ namespace Repository
             trackChanges ?
             _context.Set<T>() : _context.Set<T>().AsNoTracking();
 
-        public IQueryable<T> FindByCondition(Func<T, bool> condition, bool trackChanges) =>
-            trackChanges ?
-            _context.Set<T>().Where(condition).AsQueryable() : _context.Set<T>().AsNoTracking().Where(condition).AsQueryable();
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> condition, bool trackChanges) => trackChanges ?
+                _context.Set<T>().Where(condition) : _context.Set<T>().AsNoTracking().Where(condition);
 
         public void Create(T entity) => _context.Set<T>().Add(entity);
         

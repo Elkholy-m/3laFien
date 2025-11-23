@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Entities.Exceptions
+{
+    public sealed class AccountNotFoundException : NotFoundException
+    {
+        public AccountNotFoundException(Guid accountId) : base($"Account with id: {accountId} didn't exist in DB.") { }
+    }
+}

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class Booking
+    public class Booking : IHasCreatedAt
     {
         [Key]
         public Guid BookingId { get; set; }
@@ -19,14 +19,14 @@ namespace Entities.Models
         public BookingStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
+        [ForeignKey(nameof(Visitor))]
+        public Guid VisitorId { get; set; }
 
         [ForeignKey(nameof(Place))]
         public Guid PlaceId { get; set; }
 
         //Navigational Properties
-        public User? User { get; set; }
+        public Visitor? Visitor { get; set; }
         public Place? Place { get; set; }
     }
 }

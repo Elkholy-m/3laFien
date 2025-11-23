@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DTO\**" />
-    <EmbeddedResource Remove="DTO\**" />
-    <None Remove="DTO\**" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 
 </Project>

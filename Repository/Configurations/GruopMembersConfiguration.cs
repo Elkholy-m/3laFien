@@ -13,17 +13,7 @@ namespace Repository.Configurations
     {
         public void Configure(EntityTypeBuilder<GroupMember> builder)
         {
-            builder.HasOne(fp => fp.User)
-                .WithMany(u => u.GroupMembers)
-                .HasForeignKey(fp => fp.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(fp => fp.Group)
-                .WithMany(u => u.GroupMembers)
-                .HasForeignKey(u => u.GroupId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasKey(x => new { x.GroupId, x.UserId });
+            builder.HasKey(x => new { x.GroupId, x.VisitorId });
         }
     }
 }
