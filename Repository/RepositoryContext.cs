@@ -14,7 +14,7 @@ namespace Repository
     public class RepositoryContext :
         IdentityDbContext<
             User,
-            IdentityRole<Guid>,
+            Role,
             Guid,
             IdentityUserClaim<Guid>,
             IdentityUserRole<Guid>,

@@ -58,5 +58,11 @@ namespace _3laFein.Extensions
             services.AddSingleton(emailConfig!);
             services.AddScoped<IEmailSender, EmailSender>();
         }
+
+        public static IServiceCollection ConfigAppSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+            return services;
+        }
     }
 }

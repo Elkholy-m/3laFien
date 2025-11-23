@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace _3laFein.Reprsentaion.Controllers
 {
+    [AllowAnonymous]
     [Route("api/test")]
     [ApiController]
     public class TestController : ControllerBase
@@ -36,7 +38,7 @@ namespace _3laFein.Reprsentaion.Controllers
         [HttpGet("email")]
         public async Task<IActionResult> TestEmailAsync()
         {
-            var message = new Message(["ibnbatotoa@gmail.com"], "test", "Ibn Batota Applicaition.");
+            var message = new Message(["ibrahimshabori@gmail.com"], "test", "Ibn Batota Applicaition.");
             var messageAsync = new Message(["ibnbatotoa@gmail.com"], "test-async", "Ibn Batota Applicaition Asynchronous.");
             _emailSender.SendEmail(message);
             await _emailSender.SendEmailAsync(messageAsync);
