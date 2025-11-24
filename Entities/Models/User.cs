@@ -13,7 +13,7 @@ namespace Entities.Models
         [Required(ErrorMessage = "First name is required.")]
         public string? FirstName {  get; set; }
         public string? LastName {  get; set; }
-        public DateTime CreatedAt {  get; set; }
+        public DateTime CreatedAt {  get; set; } = DateTime.UtcNow;
         public string? ImageUrl {  get; set; }
         public bool IsDeleted { get; set; }
 
