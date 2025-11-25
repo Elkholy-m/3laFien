@@ -18,8 +18,6 @@ builder.Services.ConfigEmailConfiguration(builder.Configuration);
 builder.Services.ConfigRepositoryManager();
 builder.Services.ConfigServiceManager();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
-builder.Services.ConfigIdentity();
-builder.Services.ConfigEmailService(builder.Configuration);
 builder.Services.ConfigAppSettings(builder.Configuration);
 builder.Services.AddIdentityHandlersAndStores()
                 .ConfigureIdentityOptions()

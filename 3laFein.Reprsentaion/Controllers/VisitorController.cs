@@ -56,7 +56,7 @@ namespace _3laFein.Reprsentaion.Controllers
         [HttpOptions]
         public IActionResult GetOptions()
         {
-            Response.Headers.Add("Allow", "GET, POST, PUT, DELETE, OPTIONS");
+            Response.Headers.TryAdd("Allow", "GET, POST, PUT, DELETE, OPTIONS");
             return Ok();
         }
     }

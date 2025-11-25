@@ -44,13 +44,14 @@ namespace _3laFein.Reprsentaion.Controllers
         [HttpGet("email")]
         public async Task<IActionResult> TestEmailAsync()
         {
-            var message = new Message(["ibrahimshabori@gmail.com"], "test", "Ibn Batota Applicaition.");
+            var message = new Message(["ibnbatotoa@gmail.com"], "test", "Ibn Batota Applicaition.");
             var messageAsync = new Message(["ibnbatotoa@gmail.com"], "test-async", "Ibn Batota Applicaition Asynchronous.");
             _emailSender.SendEmail(message);
             await _emailSender.SendEmailAsync(messageAsync);
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPost("user")]
         public async Task<IActionResult> AddDummyUser(dummyUser dummyUser)
         {
