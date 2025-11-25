@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace _3laFein.Reprsentaion.Controllers
 {
-    [AllowAnonymous]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("api/test")]
     [ApiController]
     public class TestController : ControllerBase

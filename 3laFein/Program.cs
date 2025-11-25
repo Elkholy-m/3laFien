@@ -22,6 +22,7 @@ builder.Services.ConfigAppSettings(builder.Configuration);
 builder.Services.AddIdentityHandlersAndStores()
                 .ConfigureIdentityOptions()
                 .AddIdentityAuth(builder.Configuration);
+builder.Services.ConfigSwagger();
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(opt =>
@@ -34,6 +35,11 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Api Json Documentation");
+});
 await app.SeedIdentityAsync();
 
 // Configure the HTTP request pipeline.

@@ -27,7 +27,7 @@ namespace Service
 
             var claims = new List<Claim>
         {
-            new Claim("UseId", user.Id.ToString()),
+            new Claim("UserId", user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };

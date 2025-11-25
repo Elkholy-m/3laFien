@@ -4,6 +4,7 @@ using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NLog;
 using Repository;
 using Service;
@@ -90,6 +91,42 @@ namespace _3laFein.Extensions
         {
             services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
             return services;
+        }
+
+        public static void ConfigSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(setup =>
+            {
+                setup.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Final Project API",
+                    Version = "v1",
+                });
+
+                setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Place to add JWT with Bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                setup.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    { new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference 
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer", 
+                        },
+                        new List<string>() 
+                    }
+                });
+            });
         }
     }
 }
