@@ -9,20 +9,55 @@ namespace Repository
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
         private readonly RepositoryContext _context;
+        internal DbSet<T> dbSet;
 
-        public RepositoryBase(RepositoryContext context) => _context = context;
+        public RepositoryBase(RepositoryContext context)
+        {
+            _context = context;
+            this.dbSet = _context.Set<T>();
+        }
 
         public IQueryable<T> FindAll(bool trackChanges) =>
             trackChanges ?
-            _context.Set<T>() : _context.Set<T>().AsNoTracking();
+            dbSet : dbSet.AsNoTracking();
 
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> condition, bool trackChanges) => trackChanges ?
-                _context.Set<T>().Where(condition) : _context.Set<T>().AsNoTracking().Where(condition);
+                dbSet.Where(condition) : dbSet.AsNoTracking().Where(condition);
 
-        public void Create(T entity) => _context.Set<T>().Add(entity);
+        public void Create(T entity) => dbSet.Add(entity);
         
-        public void Update(T entity) => _context.Set<T>().Update(entity);
+        public void Update(T entity) => dbSet.Update(entity);
 
-        public void Delete(T entity) => _context.Set<T>().Remove(entity);
+        public void Delete(T entity) => dbSet.Remove(entity);
+
+        public IQueryable<T> FindAllByConditionWithIncludes(Expression<Func<T, bool>>? condition, string? includes = null)
+        {
+            IQueryable<T> query = dbSet;
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+            if (!string.IsNullOrEmpty(includes))
+            {
+                foreach (var includeProperty in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+            return query;
+        }
+
+        public T FindByConditionWithIncludes(Expression<Func<T, bool>> condition, string? includes = null)
+        {
+            IQueryable<T> query = dbSet;
+            if (!string.IsNullOrEmpty(includes))
+            {
+                foreach (var includeProperty in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+            return query.FirstOrDefault(condition);
+        }
     }
 }

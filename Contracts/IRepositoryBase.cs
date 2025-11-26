@@ -11,6 +11,8 @@ namespace Contracts
     {
         IQueryable<T> FindAll(bool trackChanges);
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> condition, bool trackChanges);
+        IQueryable<T> FindAllByConditionWithIncludes(Expression<Func<T, bool>>? condition, string? includes = null);
+        T FindByConditionWithIncludes(Expression<Func<T, bool>> condition, string? includes = null);
         void Create(T entity);
         void Update(T entity);
         void Delete(T entity);
