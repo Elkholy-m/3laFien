@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using Entities.Models;
-using Shared.DTOs;
 using Microsoft.AspNetCore.Http;
 using Service.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Routing;
+using Shared.DTO;
 
 
 namespace _3laFein.Reprsentaion.Controllers

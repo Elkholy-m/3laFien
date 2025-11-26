@@ -30,7 +30,6 @@ builder.Services.AddControllers()
         opt.SuppressModelStateInvalidFilter = true;
     })
     .AddApplicationPart(typeof(AssymblyRefrence).Assembly);
-builder.Services.AddControllers();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();

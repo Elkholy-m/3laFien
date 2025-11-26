@@ -74,19 +74,6 @@ namespace _3laFein.Extensions
             services.AddScoped<IServiceManager, ServiceManager>();
         }
 
-        public static void ConfigIdentity(this IServiceCollection servicces)
-        {
-            servicces.AddIdentity<User, IdentityRole<Guid>>(config =>
-            {
-                config.Password.RequireNonAlphanumeric = false;
-                config.Password.RequireUppercase = false;
-                config.Password.RequiredLength = 5;
-
-                config.User.RequireUniqueEmail = true;
-            })
-                .AddEntityFrameworkStores<RepositoryContext>();
-        }
-
         public static IServiceCollection ConfigAppSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
