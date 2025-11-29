@@ -2,11 +2,13 @@
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Service.Contracts;
 using Shared.DTO;
+using SixLabors.ImageSharp.Formats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +22,14 @@ namespace Service
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly string _wwwroot;
 
-        public VisitorService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager)
+        public VisitorService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<User> userManager, IWebHostEnvironment webHost)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
             _userManager = userManager;
+            _wwwroot = webHost.WebRootPath;
         }
 
         public async Task<IEnumerable<VisitorDto>> GetVisitorsAsync(bool trackChanges)
@@ -69,6 +73,32 @@ namespace Service
             _repositoryManager.Visitor.DeleteVisitor(visitor);
             await _userManager.DeleteAsync(user);
 
+            await _repositoryManager.SaveAsync();
+        }
+
+        public async Task SetImageUrl(Guid visitorId, string imageUrl)
+        {
+            if (string.IsNullOrWhiteSpace(imageUrl))
+                throw new InvalidFileBadRequestException("Url is empty.");
+
+            var fileName = Path.GetFileName(imageUrl);
+            if (string.IsNullOrWhiteSpace(fileName))
+                throw new InvalidFileBadRequestException("Invalid file name");
+
+            var filePath = Path.Combine(_wwwroot, imageUrl.TrimStart('/', '\\'));
+            if (!File.Exists(filePath))
+                throw new Entities.Exceptions.FileNotFoundException(imageUrl);
+
+            var visitor = await CheckVisitorExistance(visitorId, trackChanges: true);
+            visitor.ImageUrl = fileName;
+            await _repositoryManager.SaveAsync();
+        }
+
+        public async Task DeleteImage(Guid visitorId, string parentFolder, IImageService imgService)
+        {
+            var visitor = await CheckVisitorExistance(visitorId, true);
+            await imgService.DeleteImageAsync(visitor.ImageUrl!, parentFolder);
+            visitor.ImageUrl = null;
             await _repositoryManager.SaveAsync();
         }
 

@@ -2,6 +2,7 @@
 using Contracts;
 using EmailService;
 using Entities.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using NETCore.MailKit.Core;
 using Service.Contracts;
@@ -17,14 +18,17 @@ namespace Service
     {
         private readonly Lazy<VisitorService> _visitorService;
         private readonly Lazy<SocialAccountService> _socialAccountService;
-        public ServiceManager(EmailConfiguration emailConfig, UserManager<User> userManager, IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper)
+        private readonly Lazy<ImageService> _imageService;
+        public ServiceManager(EmailConfiguration emailConfig, UserManager<User> userManager, IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, IWebHostEnvironment webHost)
         {
-            _visitorService = new Lazy<VisitorService>(() => new VisitorService(repositoryManager, mapper, userManager));
+            _visitorService = new Lazy<VisitorService>(() => new VisitorService(repositoryManager, mapper, userManager, webHost));
             _socialAccountService = new Lazy<SocialAccountService>(() => new SocialAccountService(repositoryManager, mapper));
-
+            _imageService = new Lazy<ImageService>(() => new ImageService(webHost));
         }
         public IVisitorService VisitorService => _visitorService.Value;
 
-        public ISocialAccountService socialAccountService => _socialAccountService.Value;
+        public ISocialAccountService SocialAccountService => _socialAccountService.Value;
+
+        public IImageService ImageService => _imageService.Value;
     }
 }

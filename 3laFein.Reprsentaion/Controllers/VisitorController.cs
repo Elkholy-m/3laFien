@@ -59,5 +59,19 @@ namespace _3laFein.Reprsentaion.Controllers
             Response.Headers.TryAdd("Allow", "GET, POST, PUT, DELETE, OPTIONS");
             return Ok();
         }
+
+        [HttpPost("{visitorId:guid}/image")]
+        public async Task<IActionResult> SetImageUrl([FromRoute] Guid visitorId, [FromBody] SetImageUrlDto setImageUrlDto)
+        {
+            await _serviceManager.VisitorService.SetImageUrl(visitorId, setImageUrlDto.ImageUrl);
+            return NoContent();
+        }
+
+        [HttpDelete("{visitorId:guid}/image")]
+        public async Task<IActionResult> DeleteImage([FromRoute] Guid visitorId)
+        {
+            await _serviceManager.VisitorService.DeleteImage(visitorId, "visitors", _serviceManager.ImageService);
+            return NoContent();
+        }
     }
 }

@@ -20,14 +20,14 @@ namespace _3laFein.Reprsentaion.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserAccounts([FromRoute] Guid visitorId)
         {
-            var accounts = await _serviceManager.socialAccountService.GetSocialAccounts(visitorId, false);
+            var accounts = await _serviceManager.SocialAccountService.GetSocialAccounts(visitorId, false);
             return Ok(accounts);
         }
 
         [HttpGet("{accountId:guid}", Name = "GetAccountById")]
         public async Task<IActionResult> GetUserAccount([FromRoute] Guid visitorId, [FromRoute] Guid accountId)
         {
-            var account = await _serviceManager.socialAccountService.GetSocialAccount(visitorId, accountId, false);
+            var account = await _serviceManager.SocialAccountService.GetSocialAccount(visitorId, accountId, false);
             return Ok(account);
         }
 
@@ -35,7 +35,7 @@ namespace _3laFein.Reprsentaion.Controllers
         public async Task<IActionResult> CreateAccountForVisitor([FromRoute] Guid visitorId,
             [FromBody] SocialAccountForCreationDto accountForCreationDto)
         {
-            var account = await _serviceManager.socialAccountService.CreateSocailAccount(visitorId, accountForCreationDto, false);
+            var account = await _serviceManager.SocialAccountService.CreateSocailAccount(visitorId, accountForCreationDto, false);
             return CreatedAtRoute("GetAccountById", new { visitorId, accountId = account.AccountId }, account);
         }
 
@@ -43,14 +43,14 @@ namespace _3laFein.Reprsentaion.Controllers
         public async Task<IActionResult> UpdateAccount([FromRoute] Guid visitorId, [FromRoute] Guid accountId,
             [FromBody] SocialAccountForUpdateDto accountForUpdateDto)
         {
-            await _serviceManager.socialAccountService.UpdateSocailAccount(visitorId, accountId, accountForUpdateDto, true);
+            await _serviceManager.SocialAccountService.UpdateSocailAccount(visitorId, accountId, accountForUpdateDto, true);
             return NoContent();
         }
 
         [HttpDelete("{accountId:guid}")]
         public async Task<IActionResult> DeleteAccount([FromRoute] Guid visitorId, [FromRoute] Guid accountId)
         {
-            await _serviceManager.socialAccountService.DeleteSocialAccount(visitorId, accountId, true);
+            await _serviceManager.SocialAccountService.DeleteSocialAccount(visitorId, accountId, true);
             return NoContent();
         }
 

@@ -10,6 +10,8 @@ namespace Service.Contracts
     public interface IServiceManager
     {
         IVisitorService VisitorService { get; }
-        ISocialAccountService socialAccountService { get; }
+        ISocialAccountService SocialAccountService { get; }
+
+        IImageService ImageService { get; }
     }
 }

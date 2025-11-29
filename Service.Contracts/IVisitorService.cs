@@ -1,4 +1,5 @@
-﻿using Shared.DTO;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Service.Contracts
         Task<VisitorDto> CreateVisitorAsync(Guid userId, VisitorForCreationDto visitorForCreationDto);
         Task UpdateVisitorAsync(Guid visitorId, VisitorForUpdateDto visitorForUpdateDto, bool trackChanges);
         Task DeleteVisitorAsync(Guid visitorId, bool trackChanges);
+        Task SetImageUrl(Guid visitorId, string imageUrl);
+        Task DeleteImage(Guid visitorId, string parentFolder, IImageService imgService);
     }
 }

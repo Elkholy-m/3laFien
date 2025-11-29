@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace Shared.DTO
 {
     public record class VisitorDto(Guid VisitorId, string About, string Experience, string Skills,
-        string TourStyle, string Interests);
+        string TourStyle, string Interests, string ImageUrl);
 }
