@@ -19,16 +19,20 @@ namespace Service
         private readonly Lazy<VisitorService> _visitorService;
         private readonly Lazy<SocialAccountService> _socialAccountService;
         private readonly Lazy<ImageService> _imageService;
+        private readonly Lazy<PlaceImageService> _placeImageService;
         public ServiceManager(EmailConfiguration emailConfig, UserManager<User> userManager, IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, IWebHostEnvironment webHost)
         {
             _visitorService = new Lazy<VisitorService>(() => new VisitorService(repositoryManager, mapper, userManager, webHost));
             _socialAccountService = new Lazy<SocialAccountService>(() => new SocialAccountService(repositoryManager, mapper));
             _imageService = new Lazy<ImageService>(() => new ImageService(webHost));
+            _placeImageService = new Lazy<PlaceImageService>(() => new PlaceImageService(repositoryManager, mapper));
         }
         public IVisitorService VisitorService => _visitorService.Value;
 
         public ISocialAccountService SocialAccountService => _socialAccountService.Value;
 
         public IImageService ImageService => _imageService.Value;
+
+        public IPlaceImageService PlaceImageService => _placeImageService.Value;
     }
 }

@@ -11,7 +11,7 @@ namespace Service.Contracts
     public interface IImageService
     {
         Task<VisitorImageResult> VisitiorUploadAsync(IFormFile file);
-        Task<PlaceImageResult> PlaceUploadAsync(IFormFile file);
+        Task<IEnumerable<PlaceImageResult>> PlaceUploadAsync(IEnumerable<IFormFile> files);
         Task DeleteImageAsync(string imageUrl, string parentFolder);
     }
 }

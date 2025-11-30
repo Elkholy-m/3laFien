@@ -11,7 +11,7 @@ namespace Service.Contracts
     {
         IVisitorService VisitorService { get; }
         ISocialAccountService SocialAccountService { get; }
-
         IImageService ImageService { get; }
+        IPlaceImageService PlaceImageService { get; }
     }
 }

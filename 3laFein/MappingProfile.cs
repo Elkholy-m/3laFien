@@ -16,6 +16,8 @@ namespace _3laFein
             CreateMap<SocialAccount, SocialAccountDto>();
             CreateMap<SocialAccountForCreationDto, SocialAccount>();
             CreateMap<SocialAccountForUpdateDto, SocialAccount>();
+
+            CreateMap<PlaceImage, PlaceImageDto>();
         }
     }
 }

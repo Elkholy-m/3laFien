@@ -32,6 +32,7 @@ namespace Repository
             modelBuilder.ApplyConfiguration(new PlaceConfiguration());
             modelBuilder.ApplyConfiguration(new GruopConfiguration());
             modelBuilder.ApplyConfiguration(new PlaceOwnerConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             base.OnModelCreating(modelBuilder);
 
             // Make all the relations restricted behaviour instead of cascaded

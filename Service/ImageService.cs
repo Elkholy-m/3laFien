@@ -48,24 +48,28 @@ namespace Service
             string thumbnailImgUrl = await SaveImageAsync(photoId, thumbnailImg, "visitors/thumbnail");
             return new VisitorImageResult(profileImgUrl, thumbnailImgUrl);
         }
-        public async Task<PlaceImageResult> PlaceUploadAsync(IFormFile file)
+        public async Task<IEnumerable<PlaceImageResult>> PlaceUploadAsync(IEnumerable<IFormFile> files)
         {
-            ValidateFile(file);
-            ValidateSignature(file);
+            var placeImageResults = new List<PlaceImageResult>();
+            foreach(var file in files)
+            {
+                ValidateFile(file);
+                ValidateSignature(file);
 
-            using var image = Image.Load(file.OpenReadStream());
+                using var image = Image.Load(file.OpenReadStream());
 
-            Image fullImg = Resize(image, 1200, 800);
-            Image mediumImg = Resize(image, 800, 600);
-            Image thumbnailImg = Resize(image, 300, 200);
+                Image fullImg = Resize(image, 1200, 800);
+                Image mediumImg = Resize(image, 800, 600);
+                Image thumbnailImg = Resize(image, 300, 200);
 
-            var photoId = Guid.NewGuid();
+                var photoId = Guid.NewGuid();
 
-            string fullImgUrl = await SaveImageAsync(photoId, fullImg, "places/full");
-            string mediumImgUrl = await SaveImageAsync(photoId, mediumImg, "places/medium");
-            string thumbnailImgUrl = await SaveImageAsync(photoId, thumbnailImg, "places/thumbnail");
-
-            return new PlaceImageResult(fullImgUrl, mediumImgUrl, thumbnailImgUrl);
+                string fullImgUrl = await SaveImageAsync(photoId, fullImg, "places/full");
+                string mediumImgUrl = await SaveImageAsync(photoId, mediumImg, "places/medium");
+                string thumbnailImgUrl = await SaveImageAsync(photoId, thumbnailImg, "places/thumbnail");
+                placeImageResults.Add(new PlaceImageResult(fullImgUrl, mediumImgUrl, thumbnailImgUrl));
+            }
+            return placeImageResults;
         }
 
         public async Task DeleteImageAsync(string imageUrl, string parentFolder)
@@ -111,7 +115,7 @@ namespace Service
                 throw new InvalidFileBadRequestException("File size exeeded 10 MB.");
 
             var ext = Path.GetExtension(file.FileName);
-            if (!_allowedExtensions.Contains(ext))
+            if (!_allowedExtensions.Contains(ext.ToLower()))
                 throw new InvalidFileBadRequestException("Invalid Extension.");
 
             if (!_allowedMimeTypes.Contains(file.ContentType))

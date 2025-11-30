@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Shared.DTO;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Service.Contracts
         Task<VisitorDto> CreateVisitorAsync(Guid userId, VisitorForCreationDto visitorForCreationDto);
         Task UpdateVisitorAsync(Guid visitorId, VisitorForUpdateDto visitorForUpdateDto, bool trackChanges);
         Task DeleteVisitorAsync(Guid visitorId, bool trackChanges);
-        Task SetImageUrl(Guid visitorId, string imageUrl);
-        Task DeleteImage(Guid visitorId, string parentFolder, IImageService imgService);
+        Task SetImageUrl(Guid visitorId, IFormFile file, IImageService imageService, bool trackChanges);
+        Task DeleteImage(Guid visitorId, IImageService imgService, bool trackChanges);
     }
 }

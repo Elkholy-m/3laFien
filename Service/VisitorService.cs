@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileNotFoundException = Entities.Exceptions.FileNotFoundException;
 
 namespace Service
 {
@@ -76,28 +78,22 @@ namespace Service
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task SetImageUrl(Guid visitorId, string imageUrl)
+        public async Task SetImageUrl(Guid visitorId, IFormFile file, IImageService imageService, bool trackChanges)
         {
-            if (string.IsNullOrWhiteSpace(imageUrl))
-                throw new InvalidFileBadRequestException("Url is empty.");
+            var visitor = await CheckVisitorExistance(visitorId, trackChanges);
+            if (visitor.ImageUrl is not null)
+                throw new InvalidFileBadRequestException("The visitor already has an image delete it first then upload.");
 
-            var fileName = Path.GetFileName(imageUrl);
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new InvalidFileBadRequestException("Invalid file name");
+            var imageResult = await imageService.VisitiorUploadAsync(file);
 
-            var filePath = Path.Combine(_wwwroot, imageUrl.TrimStart('/', '\\'));
-            if (!File.Exists(filePath))
-                throw new Entities.Exceptions.FileNotFoundException(imageUrl);
-
-            var visitor = await CheckVisitorExistance(visitorId, trackChanges: true);
-            visitor.ImageUrl = fileName;
+            visitor.ImageUrl = Path.GetFileName(imageResult.ThumbnailUrl);
             await _repositoryManager.SaveAsync();
         }
 
-        public async Task DeleteImage(Guid visitorId, string parentFolder, IImageService imgService)
+        public async Task DeleteImage(Guid visitorId, IImageService imgService, bool trackChanges)
         {
             var visitor = await CheckVisitorExistance(visitorId, true);
-            await imgService.DeleteImageAsync(visitor.ImageUrl!, parentFolder);
+            await imgService.DeleteImageAsync(visitor.ImageUrl!, "visitors");
             visitor.ImageUrl = null;
             await _repositoryManager.SaveAsync();
         }

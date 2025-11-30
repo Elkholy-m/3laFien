@@ -61,16 +61,17 @@ namespace _3laFein.Reprsentaion.Controllers
         }
 
         [HttpPost("{visitorId:guid}/image")]
-        public async Task<IActionResult> SetImageUrl([FromRoute] Guid visitorId, [FromBody] SetImageUrlDto setImageUrlDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadVisitorImage([FromRoute]Guid visitorId, [FromForm] UploadImageDto uploadImageDto)
         {
-            await _serviceManager.VisitorService.SetImageUrl(visitorId, setImageUrlDto.ImageUrl);
+            await _serviceManager.VisitorService.SetImageUrl(visitorId, uploadImageDto.File, _serviceManager.ImageService, true);
             return NoContent();
         }
 
         [HttpDelete("{visitorId:guid}/image")]
         public async Task<IActionResult> DeleteImage([FromRoute] Guid visitorId)
         {
-            await _serviceManager.VisitorService.DeleteImage(visitorId, "visitors", _serviceManager.ImageService);
+            await _serviceManager.VisitorService.DeleteImage(visitorId, _serviceManager.ImageService, true);
             return NoContent();
         }
     }
