@@ -12,7 +12,7 @@ namespace Entities.Models
     {
         [Key]
         public int CategoryId { get; set; }
-        public CategoriesName Name { get; set; }
+        public string Name { get; set; }
         public string? Description { get; set; }
         public bool IsDeleted { get; set; }
 

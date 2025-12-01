@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,7 @@ namespace Entities.Models
         public string? LastName {  get; set; }
         public bool IsDeleted { get; set; }
         public DateTime DeletedAt { get; set; }
+        public Point? Location { get; set; }
 
         // Navigational Property
         public Visitor? Visitor { get; set; }

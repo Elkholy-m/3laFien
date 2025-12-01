@@ -13,5 +13,7 @@ namespace Service.Contracts
         ISocialAccountService SocialAccountService { get; }
         IImageService ImageService { get; }
         IPlaceImageService PlaceImageService { get; }
+        IPlaceService PlaceService { get; }
+        ICategoryService CategoryService { get; }
     }
 }

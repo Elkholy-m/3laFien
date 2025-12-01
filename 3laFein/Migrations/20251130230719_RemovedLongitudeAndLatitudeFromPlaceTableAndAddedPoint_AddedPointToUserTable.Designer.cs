@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Repository;
@@ -12,9 +13,11 @@ using Repository;
 namespace _3laFein.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20251130230719_RemovedLongitudeAndLatitudeFromPlaceTableAndAddedPoint_AddedPointToUserTable")]
+    partial class RemovedLongitudeAndLatitudeFromPlaceTableAndAddedPoint_AddedPointToUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +76,8 @@ namespace _3laFein.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
 
                     b.HasKey("CategoryId");
 
@@ -85,16 +87,16 @@ namespace _3laFein.Migrations
                         new
                         {
                             CategoryId = 1,
-                            Description = "This category for resturants.",
+                            Description = "Test",
                             IsDeleted = false,
-                            Name = "Resturant"
+                            Name = 5
                         },
                         new
                         {
                             CategoryId = 2,
-                            Description = "This category for hotels.",
+                            Description = "Test",
                             IsDeleted = false,
-                            Name = "Hotel"
+                            Name = 2
                         });
                 });
 
@@ -245,6 +247,7 @@ namespace _3laFein.Migrations
                         .HasColumnType("bit");
 
                     b.Property<Point>("Location")
+                        .IsRequired()
                         .HasColumnType("geography");
 
                     b.Property<string>("Name")
@@ -490,6 +493,7 @@ namespace _3laFein.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Point>("Location")
+                        .IsRequired()
                         .HasColumnType("geography");
 
                     b.Property<bool>("LockoutEnabled")

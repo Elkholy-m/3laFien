@@ -17,15 +17,15 @@ namespace Repository.Configurations
                 new Category
                 {
                     CategoryId = 1,
-                    Name = Entities.Models.Enums.CategoriesName.Resturant,
-                    Description = "Test",
+                    Name = "Resturant",
+                    Description = "This category for resturants.",
                     IsDeleted = false
                 },
                 new Category
                 {
                     CategoryId = 2,
-                    Name = Entities.Models.Enums.CategoriesName.Hotel,
-                    Description = "Test",
+                    Name = "Hotel",
+                    Description = "This category for hotels.",
                     IsDeleted = false
                 }
             );

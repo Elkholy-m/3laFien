@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetTopologySuite.Geometries;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,8 +18,7 @@ namespace Entities.Models
         public string? Country { get; set; }
         public string? City { get; set; }
         public string? Street { get; set; }
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
+        public Point? Location { get; set; }
         public decimal Price { get; set; }
         public float Rate { get; set; }
         public int TotalReviews { get; set; }
@@ -29,6 +29,16 @@ namespace Entities.Models
 
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
+
+        [NotMapped]
+        public decimal DiscountedPrice
+        {
+            get
+            {
+                if (DiscountPercentage <= 0) return Price;
+                return Price - (Price * (DiscountPercentage / 100m));
+            }
+        }
 
         // Navigational Properties
         public Category? Category { get; set; }

@@ -9,7 +9,7 @@ namespace Shared.DTO
 {
     public abstract record class VisitorForManipulation
     {
-        [Required(ErrorMessage = "First name is a required field.")]
+        [Required(ErrorMessage = "About is a required field.")]
         [MaxLength(100, ErrorMessage = "The max length for the About is 100 characters.")]
         public string? About { get; init; }
 

@@ -45,7 +45,8 @@ namespace _3laFein.Extensions
             {
                 opt.UseSqlServer(
                     config.GetConnectionString("sqlConnection"),
-                    x => x.MigrationsAssembly("3laFein")
+                    x => x.UseNetTopologySuite()
+                          .MigrationsAssembly("3laFein")
                 );
             });
         }

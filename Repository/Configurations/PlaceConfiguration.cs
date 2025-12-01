@@ -1,6 +1,7 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +26,12 @@ namespace Repository.Configurations
                     Country = "Egypt",
                     City = "Giza",
                     Street = "N/A",
-                    Latitude = 29.9792f,
-                    Longitude = 31.1343f,
                     Price = 200,
                     Rate = 4.3f,
                     TotalReviews = 10,
                     DiscountPercentage = 2,
                     CreatedAt = new DateTime(2000, 4, 4),
+                    Location = new Point(31.1342, 29.9792) { SRID = 4326 },
                     IsDeleted = false,
                     CategoryId = 1
                 },
@@ -43,13 +43,12 @@ namespace Repository.Configurations
                     Country = "KSA",
                     City = "Mecca",
                     Street = "N/A",
-                    Latitude = 21.4241f,
-                    Longitude = 39.8173f,
                     Price = 300,
                     Rate = 5f,
                     TotalReviews = 100,
                     DiscountPercentage = 4,
                     CreatedAt = new DateTime(1990, 4, 4),
+                    Location = new Point(39.8262, 21.4225) { SRID = 4326 },
                     IsDeleted = false,
                     CategoryId = 2
                 }

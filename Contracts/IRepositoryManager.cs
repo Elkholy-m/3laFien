@@ -11,6 +11,8 @@ namespace Contracts
         ISocialAccountRepository SocialAccount { get; }
         IVisitorRepository Visitor { get; }
         IPlaceImageRepository PlaceImage { get; }
+        IPlaceRepository Place { get; }
+        ICategoryRepository Category { get; }
         Task SaveAsync();
     }
 }
