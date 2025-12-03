@@ -29,6 +29,9 @@ namespace Service
         }
         public async Task<PlaceDto> CreatePlaceAsync(PlaceForCreationDto placeForCreationDto)
         {
+            // Check Category Existance First
+            await CheckCategoryExistance(placeForCreationDto);
+
             var place = _mapper.Map<Place>(placeForCreationDto);
             _repositoryManager.Place.CreatePlaceAsync(place);
             await _repositoryManager.SaveAsync();
@@ -48,35 +51,76 @@ namespace Service
         public async Task<PlaceDto> GetPlaceAsync(Guid placeId, bool trackChanges)
         {
             var place = await CheckPlaceExistance(placeId, trackChanges);
-            return _mapper.Map<PlaceDto>(place);
+            PlaceDto placeDto = ManualMapEntity(place);
+            return placeDto;
         }
 
         public async Task<IEnumerable<PlaceDto>> GetPlacesAsync(bool trackChanges)
         {
             var places = await _repositoryManager.Place.GetPlacesAsync(trackChanges);
-            return _mapper.Map<IEnumerable<PlaceDto>>(places);
+            List<PlaceDto> placesDto = ManualMapEntities(places);
+            return placesDto;
         }
 
         public async Task<IEnumerable<PlaceDto>> GetNearestPlaces(double userLon, double userLat, bool trackChanges)
         {
             var places = await _repositoryManager.Place.GetPlacesNearestToUserAsync(userLon, userLat, trackChanges);
-            return _mapper.Map<IEnumerable<PlaceDto>>(places);
+            var placesDto = ManualMapEntities(places);
+            return placesDto;
         }
 
         public async Task UpdatePlaceAsync(Guid placeId, PlaceForUpdateDto placeForUpdateDto, bool trackChanges)
         {
+            // Check Category Existance First
+            await CheckCategoryExistance(placeForUpdateDto);
             Place place = await CheckPlaceExistance(placeId, trackChanges);
 
             _mapper.Map(placeForUpdateDto, place);
             await _repositoryManager.SaveAsync();
         }
 
+        private async Task CheckCategoryExistance(PlaceForManipulation placeForManipulation)
+        {
+            var category = await _repositoryManager.Category.GetCategoryAsync(placeForManipulation.CategoryId, false);
+            if (category is null)
+                throw new CategoryNotFoundException(placeForManipulation.CategoryId);
+        }
         private async Task<Place> CheckPlaceExistance(Guid placeId, bool trackChanges)
         {
             var place = await _repositoryManager.Place.GetPlaceAsync(placeId, trackChanges);
             if (place is null)
                 throw new PlaceNotFoundException(placeId);
             return place;
+        }
+        private PlaceDto ManualMapEntity(Place place)
+        {
+            var placeDto = _mapper.Map<PlaceDto>(place);
+
+            // Manual Mapping
+            placeDto.MainImageUrl = place.PlaceImages!.Where(img => img.IsMain).Select(img => img.ImageUrl).SingleOrDefault();
+            if (place.Reviews is not null && place.Reviews.Any())
+            {
+                var reviewsCount = place.Reviews.Count();
+                placeDto.TotalReviews = reviewsCount;
+                placeDto.Rate = place.Reviews.Sum(rev => (float)rev.Rating) / reviewsCount;
+            };
+            var todayPlaceSchedule = place.PlaceSchedules!.Where(schedule => schedule.WeekDay.Equals(DateTime.UtcNow.DayOfWeek)).SingleOrDefault();
+            if (todayPlaceSchedule is not null &&
+                DateTime.UtcNow.TimeOfDay > todayPlaceSchedule.OpenTime.ToTimeSpan() &&
+                DateTime.UtcNow.TimeOfDay < todayPlaceSchedule.ClosedTime.ToTimeSpan())
+                placeDto.IsOpened = true;
+            return placeDto;
+        }
+        private List<PlaceDto> ManualMapEntities(IEnumerable<Place> places)
+        {
+            var placesDto = new List<PlaceDto>();
+            foreach (var place in places)
+            {
+                var placeDto = ManualMapEntity(place);
+                placesDto.Add(placeDto);
+            }
+
+            return placesDto;
         }
     }
 }

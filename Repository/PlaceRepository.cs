@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTO;
 
 namespace Repository
 {
@@ -21,11 +22,11 @@ namespace Repository
         public void DeletePlace(Place place) => Delete(place);
 
         public Task<Place?> GetPlaceAsync(Guid placeId, bool trackChanges) =>
-            FindByCondition(p => p.PlaceId.Equals(placeId) && p.IsDeleted == false, trackChanges)
+            FindByConditionWithIncludes(p => p.PlaceId.Equals(placeId) && p.IsDeleted == false, trackChanges, "PlaceImages,Reviews,PlaceSchedules")
                 .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Place>> GetPlacesAsync(bool trackChanges) =>
-            await FindByCondition(p => p.IsDeleted == false, trackChanges)
+        public async Task<IEnumerable<Place>> GetPlacesAsync(bool trackChanges) => await 
+            FindAllByConditionWithIncludes(p => p.IsDeleted == false, trackChanges, "PlaceImages,Reviews,PlaceSchedules")
                  .OrderBy(p => p.Name)
                  .ToListAsync();
 
@@ -35,7 +36,7 @@ namespace Repository
             var userLocation = geometryFactory.CreatePoint(new Coordinate(userLon, userLat));
 
             // EF Core magic happens here
-            return await FindByCondition(p => p.IsDeleted == false, trackChanges)
+            return await FindByConditionWithIncludes(p => p.IsDeleted == false, trackChanges, "PlaceImages,Reviews,PlaceSchedules")
                 // Calculate distance from user to every place and sort ascending
                 .OrderBy(p => p.Location.Distance(userLocation))
                 .ToListAsync();

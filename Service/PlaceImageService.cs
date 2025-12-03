@@ -28,7 +28,7 @@ namespace Service
 
         public async Task<IEnumerable<PlaceImageDto>> GetAllPlaceImages(Guid placeId, bool trackChanges)
         {
-            //todo: check if place exist first
+            await CheckPlaceExistance(placeId, trackChanges);
 
             var placeImages = await _repositoryManager.PlaceImage.GetPlaceImages(placeId, trackChanges);
             return _mapper.Map<IEnumerable<PlaceImageDto>>(placeImages);
@@ -36,7 +36,7 @@ namespace Service
 
         public async Task<PlaceImageDto> GetPlaceImage(Guid placeId, Guid imageId, bool trackChanges)
         {
-            //todo: check if place exist first
+            await CheckPlaceExistance(placeId, trackChanges);
 
             var placeImage = await CheckImageExistance(placeId, imageId, trackChanges);
             return _mapper.Map<PlaceImageDto>(placeImage);
@@ -44,7 +44,7 @@ namespace Service
 
         public async Task<IEnumerable<PlaceImageDto>> CreatePlaceImages(Guid placeId, IFormFileCollection files, IImageService imageService)
         {
-            // todo: check if place exist first
+            await CheckPlaceExistance(placeId, false);
 
             // Upload images to the wwwroot
             var placeImageResults = await imageService.PlaceUploadAsync(files);
@@ -68,7 +68,7 @@ namespace Service
 
         public async Task DeletePlaceImage(Guid placeId, Guid imageId, IImageService imageService, bool trackChanges)
         {
-            //todo: check if place exist first
+            await CheckPlaceExistance(placeId, trackChanges);
 
             var placeImage = await CheckImageExistance(placeId, imageId, trackChanges);
             await imageService.DeleteImageAsync(placeImage.ImageUrl!, "places");
@@ -78,7 +78,8 @@ namespace Service
 
         public async Task<PlaceImageDto> GetMainImage(Guid placeId, bool trackChanges)
         {
-            // todo: check place existance first
+            await CheckPlaceExistance(placeId, trackChanges);
+
             var mainPlaceImage = await _repositoryManager.PlaceImage.GetMainImage(placeId, trackChanges);
             if (mainPlaceImage is null)
                 throw new FileNotFoundException($"The place with ID: {placeId} has no main image.");
@@ -87,7 +88,7 @@ namespace Service
 
         public async Task SetMainImage(Guid placeId, Guid mainImageId, bool trackChanges)
         {
-            // todo: check if place exist first
+            await CheckPlaceExistance(placeId, trackChanges); 
 
             var images = await _repositoryManager.PlaceImage.GetPlaceImages(placeId, trackChanges);
             var oldMainImage = images.SingleOrDefault(x => x.IsMain);
@@ -115,5 +116,11 @@ namespace Service
             return placeImage;
         }
 
+        private async Task CheckPlaceExistance(Guid placeId, bool trackChanges)
+        {
+            var place = await _repositoryManager.Place.GetPlaceAsync(placeId, trackChanges);
+            if (place is null)
+                throw new PlaceNotFoundException(placeId);
+        }
     }
 }

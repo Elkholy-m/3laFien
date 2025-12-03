@@ -42,14 +42,6 @@ namespace Shared.DTO
         [Range(0.01, (double)decimal.MaxValue, ErrorMessage = "Price must be a positive value.")]
         public decimal? Price { get; init; }
 
-        // TotalReviews must be non-negative.
-        [Range(0, int.MaxValue, ErrorMessage = "Total Reviews must be a non-negative integer.")]
-        public int? TotalReviews { get; init; }
-
-        // Rate must be between 1.0 and 5.0.
-        [Range(1.0, 5.0, ErrorMessage = "Rate must be between 1.0 and 5.0.")]
-        public float? Rate { get; init; }
-
         // DiscountPercentage must be between 0 and 100.
         [Range(0.0, 100.0, ErrorMessage = "Discount Percentage must be between 0 and 100.")]
         public decimal? DiscountPercentage { get; init; }

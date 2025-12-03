@@ -13,7 +13,7 @@ namespace Entities.Models
     {
         [Key]
         public Guid ScheduleId { get; set; }
-        public WeekDays WeekDay { get; set; }
+        public DayOfWeek WeekDay { get; set; }
         public TimeOnly OpenTime {  get; set; }
         public TimeOnly ClosedTime { get; set; }
         public bool IsClosed { get; set; }

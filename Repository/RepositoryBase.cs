@@ -30,7 +30,7 @@ namespace Repository
 
         public void Delete(T entity) => dbSet.Remove(entity);
 
-        public IQueryable<T> FindAllByConditionWithIncludes(Expression<Func<T, bool>>? condition, string? includes = null)
+        public IQueryable<T> FindAllByConditionWithIncludes(Expression<Func<T, bool>>? condition, bool trackChanges, string? includes = null)
         {
             IQueryable<T> query = dbSet;
             if (condition != null)
@@ -44,10 +44,10 @@ namespace Repository
                     query = query.Include(includeProperty);
                 }
             }
-            return query;
+            return trackChanges ? query : query.AsNoTracking();
         }
 
-        public T FindByConditionWithIncludes(Expression<Func<T, bool>> condition, string? includes = null)
+        public IQueryable<T> FindByConditionWithIncludes(Expression<Func<T, bool>> condition, bool trackChanges, string? includes = null)
         {
             IQueryable<T> query = dbSet;
             if (!string.IsNullOrEmpty(includes))
@@ -57,7 +57,7 @@ namespace Repository
                     query = query.Include(includeProperty);
                 }
             }
-            return query.FirstOrDefault(condition);
+            return trackChanges ? query.Where(condition) : query.Where(condition).AsNoTracking();
         }
     }
 }

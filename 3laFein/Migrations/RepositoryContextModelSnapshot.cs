@@ -56,7 +56,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("VisitorId");
 
-                    b.ToTable("UsersBooking");
+                    b.ToTable("UsersBooking", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Category", b =>
@@ -79,7 +79,7 @@ namespace _3laFein.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -113,7 +113,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("FavoritePlaces");
+                    b.ToTable("FavoritePlaces", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Group", b =>
@@ -153,7 +153,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("VisitorId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.GroupBooking", b =>
@@ -186,7 +186,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("GroupsBooking");
+                    b.ToTable("GroupsBooking", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.GroupMember", b =>
@@ -210,7 +210,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("VisitorId");
 
-                    b.ToTable("GroupMembers");
+                    b.ToTable("GroupMembers", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Place", b =>
@@ -267,7 +267,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Places");
+                    b.ToTable("Places", (string)null);
 
                     b.HasData(
                         new
@@ -327,7 +327,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("PlaceImages");
+                    b.ToTable("PlaceImages", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.PlaceOwner", b =>
@@ -345,7 +345,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("VisitorId");
 
-                    b.ToTable("PlaceOwners");
+                    b.ToTable("PlaceOwners", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.PlaceSchedule", b =>
@@ -373,7 +373,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("PlaceSchedules");
+                    b.ToTable("PlaceSchedules", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Review", b =>
@@ -403,7 +403,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("VisitorId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Role", b =>
@@ -453,7 +453,7 @@ namespace _3laFein.Migrations
 
                     b.HasIndex("VisitorId");
 
-                    b.ToTable("SocialAccounts");
+                    b.ToTable("SocialAccounts", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.User", b =>
@@ -581,7 +581,7 @@ namespace _3laFein.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Visitors");
+                    b.ToTable("Visitors", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
