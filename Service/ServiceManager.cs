@@ -27,6 +27,8 @@ namespace Service
         private readonly Lazy<PlaceService> _placeService;
         private readonly Lazy<ReviewService> _reviewService;
         private readonly Lazy<TokenService> _tokenService;
+        private readonly Lazy<PlaceScheduleService> _placeScheduleService;
+
         public ServiceManager(EmailConfiguration emailConfig, IConfiguration config, UserManager<User> userManager, IOptions<AppSettings> appSettings, IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, IWebHostEnvironment webHost)
         {
             _visitorService = new Lazy<VisitorService>(() => new VisitorService(repositoryManager, mapper, userManager, webHost));
@@ -38,7 +40,9 @@ namespace Service
             _reviewService = new Lazy<ReviewService>(() => new ReviewService(repositoryManager, mapper, userManager));
             _tokenService = new Lazy<TokenService>(() => new TokenService(appSettings, userManager));
             _authenticationService = new Lazy<AuthenticationService>(() => new AuthenticationService(userManager, _tokenService.Value, repositoryManager, config));
+            _placeScheduleService = new Lazy<PlaceScheduleService>(() => new PlaceScheduleService(repositoryManager, mapper));
         }
+
         public IVisitorService VisitorService => _visitorService.Value;
 
         public ISocialAccountService SocialAccountService => _socialAccountService.Value;
@@ -55,5 +59,6 @@ namespace Service
 
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
 
+        public IPlaceScheduleService PlaceScheduleService => _placeScheduleService.Value;
     }
 }

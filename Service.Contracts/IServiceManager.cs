@@ -18,5 +18,6 @@ namespace Service.Contracts
         ICategoryService CategoryService { get; }
         IReviewService ReviewService { get; }
 
+        IPlaceScheduleService PlaceScheduleService { get; }
     }
 }

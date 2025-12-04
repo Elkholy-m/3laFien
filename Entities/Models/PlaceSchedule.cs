@@ -16,7 +16,6 @@ namespace Entities.Models
         public DayOfWeek WeekDay { get; set; }
         public TimeOnly OpenTime {  get; set; }
         public TimeOnly ClosedTime { get; set; }
-        public bool IsClosed { get; set; }
 
         [ForeignKey(nameof(Place))]
         public Guid PlaceId { get; set; }

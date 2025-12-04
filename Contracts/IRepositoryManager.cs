@@ -14,6 +14,7 @@ namespace Contracts
         IPlaceRepository Place { get; }
         ICategoryRepository Category { get; }
         IReviewRepository Review { get; }
+        IPlaceScheduleRepository PlaceSchedule { get; }
         Task SaveAsync();
         Task ExecuteInTransactionAsync(Func<Task> action);
     }

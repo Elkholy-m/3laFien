@@ -16,6 +16,7 @@ namespace Repository
         private readonly Lazy<PlaceRepository> _placeRepository;
         private readonly Lazy<CategoryRepository> _categoryRepository;
         private readonly Lazy<ReviewRepository> _reviewRepository;
+        private readonly Lazy<PlaceScheduleRepository> _placeScheduleRepository;
         private readonly RepositoryContext _context;
 
         public RepositoryManager(RepositoryContext context)
@@ -27,6 +28,7 @@ namespace Repository
             _placeRepository = new Lazy<PlaceRepository>(() => new PlaceRepository(context));
             _categoryRepository = new Lazy<CategoryRepository>(() => new CategoryRepository(context));
             _reviewRepository = new Lazy<ReviewRepository>(() => new ReviewRepository(context));
+            _placeScheduleRepository = new Lazy<PlaceScheduleRepository>(() => new PlaceScheduleRepository(context));
         }
 
         public ISocialAccountRepository SocialAccount => _socialAccountRepository.Value;
@@ -40,6 +42,7 @@ namespace Repository
         public ICategoryRepository Category => _categoryRepository.Value;
 
         public IReviewRepository Review => _reviewRepository.Value;
+        public IPlaceScheduleRepository PlaceSchedule => _placeScheduleRepository.Value;
 
         public async Task SaveAsync() => await _context.SaveChangesAsync();
 

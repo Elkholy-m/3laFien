@@ -51,6 +51,10 @@ namespace _3laFein
                     : null))
                 .ForMember(dest => dest.PlaceId, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
+            CreateMap<PlaceSchedule, PlaceScheduleDto>();
+            CreateMap<PlaceScheduleForCreationDto, PlaceSchedule>();
+            CreateMap<PlaceScheduleForUpdateDto, PlaceSchedule>();
         }
 
         // Helper method to create the NTS Point
