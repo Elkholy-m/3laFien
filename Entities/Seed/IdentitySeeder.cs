@@ -37,7 +37,8 @@ namespace Entities.Seed
                     Email = adminEmail,
                     FirstName = "Ibrahim",
                     LastName = "Shabori",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    SecurityStamp = Guid.NewGuid().ToString(),
                 };
 
                 var result = await userManager.CreateAsync(adminUser, "B5shaaaBrh55m");

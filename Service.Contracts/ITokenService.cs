@@ -4,6 +4,6 @@ namespace Service.Contracts
 {
     public interface ITokenService
     {
-        Task<string> CreateTokenAsync(User user);
+        Task<string> CreateTokenAsync(User user, Guid? vistorId);
     }
 }

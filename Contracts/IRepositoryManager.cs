@@ -13,6 +13,8 @@ namespace Contracts
         IPlaceImageRepository PlaceImage { get; }
         IPlaceRepository Place { get; }
         ICategoryRepository Category { get; }
+        IReviewRepository Review { get; }
         Task SaveAsync();
+        Task ExecuteInTransactionAsync(Func<Task> action);
     }
 }

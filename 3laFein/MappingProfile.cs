@@ -24,6 +24,10 @@ namespace _3laFein
             CreateMap<CategoryForCreationDto, Category>();
             CreateMap<CategoryForUpdateDto, Category>();
 
+            CreateMap<Review, ReviewDto>();
+            CreateMap<ReviewForCreationDto, Review>();
+            CreateMap<ReviewForUpdateDto, Review>();
+
             // 1. Entity -> Read DTO
             CreateMap<Place, PlaceDto>()
                 .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Location.X))

@@ -30,5 +30,9 @@ namespace Repository
         public void UpdateVisitor(Visitor visitor) => Update(visitor);
 
         public void DeleteVisitor(Visitor visitor) => Delete(visitor);
+
+        public async Task<Visitor?> GetVisitorByUserIdAsync(Guid userId, bool trackChanges = false) => await
+                FindByCondition(visitor => visitor.UserId.Equals(userId) && !visitor.IsDeleted, trackChanges)
+                .SingleOrDefaultAsync();
     }
 }

@@ -14,30 +14,38 @@ namespace Service
         private readonly IOptions<AppSettings> _appSettings;
         private readonly UserManager<User> _userManager;
 
-        public TokenService(IOptions<AppSettings> appSettings,
-                            UserManager<User> userManager)
+        public TokenService(IOptions<AppSettings> appSettings, UserManager<User> userManager)
         {
             _appSettings = appSettings;
             _userManager = userManager;
         }
 
-        public async Task<string> CreateTokenAsync(User user)
+        // UPDATE: Accept visitorId as a nullable int (in case admins don't have visitors)
+        public async Task<string> CreateTokenAsync(User user, Guid? visitorId)
         {
             var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim>
         {
-            new Claim("UserId", user.Id.ToString()),
+            // RECOMMENDATION: Use Standard ClaimTypes.NameIdentifier for the User ID
+            // This makes User.FindFirst(ClaimTypes.NameIdentifier) work automatically in controllers
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+
             new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? ""),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-            // add role claims
+            // --- NEW LOGIC ---
+            // If a visitor ID exists, add it to the claims
+            if (visitorId.HasValue)
+            {
+                claims.Add(new Claim("VisitorId", visitorId.Value.ToString()));
+            }
+            // -----------------
+
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_appSettings.Value.JWTSecret!));
-
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Value.JWTSecret!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
