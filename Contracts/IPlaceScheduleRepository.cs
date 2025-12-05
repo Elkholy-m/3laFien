@@ -14,5 +14,6 @@ namespace Contracts
         void CreatePlaceSchedule(Guid placeId, PlaceSchedule schedule);
         void UpdatePlaceSchedule(PlaceSchedule schedule);
         void DeletePlaceSchedule(PlaceSchedule schedule);
+        Task<PlaceSchedule?> GetPlaceScheduleByDayNumber(Guid placeId, DayOfWeek dayOfWeek, bool trackChanges); 
     }
 }

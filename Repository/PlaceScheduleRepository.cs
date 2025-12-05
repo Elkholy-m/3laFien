@@ -34,5 +34,12 @@ namespace Repository
         public void UpdatePlaceSchedule(PlaceSchedule schedule) => Update(schedule);
 
         public void DeletePlaceSchedule(PlaceSchedule schedule) => Delete(schedule);
+
+        public async Task<PlaceSchedule?> GetPlaceScheduleByDayNumber(Guid placeId, DayOfWeek dayOfWeek, bool trackChanges) => await
+            FindByCondition(
+                schedule => schedule.PlaceId.Equals(placeId) &&
+                schedule.WeekDay.Equals(dayOfWeek),
+            trackChanges)
+            .SingleOrDefaultAsync();
     }
 }

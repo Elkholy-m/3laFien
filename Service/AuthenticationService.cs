@@ -58,7 +58,7 @@ namespace Service
                 await _userManager.AddToRoleAsync(user, "User");
 
                 // Create Stub Visitor
-                _repository.Visitor.CreateVisitorAsync(user.Id, new Visitor
+                _repository.Visitor.CreateVisitor(user.Id, new Visitor
                 {
                     UserId = user.Id,
                     CreatedAt = DateTime.UtcNow,
@@ -117,7 +117,7 @@ namespace Service
                     await _userManager.AddToRoleAsync(user, "User");
 
                     // Create Stub Visitor for Google User too!
-                    _repository.Visitor.CreateVisitorAsync(user.Id, new Visitor
+                    _repository.Visitor.CreateVisitor(user.Id, new Visitor
                     {
                         UserId = user.Id,
                         CreatedAt = DateTime.UtcNow,

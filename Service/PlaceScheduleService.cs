@@ -42,6 +42,9 @@ namespace Service
         {
             await CheckPlaceExistance(placeId, trackChanges);
             var schedule = _mapper.Map<PlaceSchedule>(placeScheduleForCreationDto);
+            var scheduleInDb = await _repositoryManager.PlaceSchedule.GetPlaceScheduleByDayNumber(placeId, schedule.WeekDay, false);
+            if (scheduleInDb is not null)
+                throw new ScheduleAlreadyExistConflictException();
             _repositoryManager.PlaceSchedule.CreatePlaceSchedule(placeId, schedule);
             await _repositoryManager.SaveAsync();
             return _mapper.Map<PlaceScheduleDto>(schedule);
