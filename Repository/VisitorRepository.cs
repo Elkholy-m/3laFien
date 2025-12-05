@@ -21,7 +21,7 @@ namespace Repository
                 FindByCondition(visitor => visitor.VisitorId.Equals(visitorId) && !visitor.IsDeleted, trackChanges)
                 .SingleOrDefaultAsync();
 
-        public void CreateVisitorAsync(Guid userId, Visitor visitor)
+        public void CreateVisitor(Guid userId, Visitor visitor)
         {
             visitor.UserId = userId;
             Create(visitor);

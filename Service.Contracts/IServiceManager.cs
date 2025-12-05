@@ -19,5 +19,6 @@ namespace Service.Contracts
         IReviewService ReviewService { get; }
 
         IPlaceScheduleService PlaceScheduleService { get; }
+        IFavouritePlaceService FavoritePlaceService { get; }
     }
 }

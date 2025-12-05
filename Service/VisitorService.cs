@@ -49,7 +49,7 @@ namespace Service
         public async Task<VisitorDto> CreateVisitorAsync(Guid userId, VisitorForCreationDto visitorForCreationDto)
         {
             var visitor = _mapper.Map<Visitor>(visitorForCreationDto);
-            _repositoryManager.Visitor.CreateVisitorAsync(userId, visitor);
+            _repositoryManager.Visitor.CreateVisitor(userId, visitor);
             await _repositoryManager.SaveAsync();
 
             return _mapper.Map<VisitorDto>(visitor);

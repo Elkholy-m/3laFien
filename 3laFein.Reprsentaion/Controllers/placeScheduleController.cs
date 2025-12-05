@@ -59,5 +59,12 @@ namespace _3laFein.Reprsentaion.Controllers
             await _serviceManager.PlaceScheduleService.DeletePlaceSchedule(placeId, scheduleId, true);
             return NoContent();
         }
+
+        [HttpOptions]
+        public IActionResult GetOptions()
+        {
+            Response.Headers.TryAdd("Allow", "GET, POST, PUT, DELETE, OPTIONS");
+            return Ok();
+        }
     }
 }

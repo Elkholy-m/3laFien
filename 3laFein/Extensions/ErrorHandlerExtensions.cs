@@ -20,6 +20,7 @@ namespace _3laFein.Extensions
                         {
                             NotFoundException => StatusCodes.Status404NotFound,
                             BadRequestException => StatusCodes.Status400BadRequest,
+                            ConflictException => StatusCodes.Status409Conflict,
                             _ => StatusCodes.Status500InternalServerError
                         };
 

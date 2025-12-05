@@ -55,6 +55,8 @@ namespace _3laFein
             CreateMap<PlaceSchedule, PlaceScheduleDto>();
             CreateMap<PlaceScheduleForCreationDto, PlaceSchedule>();
             CreateMap<PlaceScheduleForUpdateDto, PlaceSchedule>();
+
+            CreateMap<FavouritePlaces, FavouritePlaceDto>();
         }
 
         // Helper method to create the NTS Point
