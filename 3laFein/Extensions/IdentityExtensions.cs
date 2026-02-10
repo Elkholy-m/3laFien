@@ -67,9 +67,11 @@ namespace _3laFein.Extensions
 
             services.AddAuthorization(options =>
             {
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
+            // todo: uncomment this line for the production 
+            // suppress the authentication for eazy test end points
+                // options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                //     .RequireAuthenticatedUser()
+                //     .Build();
             });
 
             return services;

@@ -1,15 +1,11 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.DTO;
 
 namespace Contracts
 {
     public interface IPlaceRepository
     {
-        Task<IEnumerable<Place>> GetPlacesAsync(bool trackChanges);
+        Task<PagedList<Place>> GetPlacesAsync(PlaceQueryString queryString, bool trackChanges);
         Task<Place?> GetPlaceAsync(Guid placeId, bool trackChanges);
         void CreatePlaceAsync(Place place);
         void UpdatePlace(Place place);

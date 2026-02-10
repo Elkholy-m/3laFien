@@ -2,31 +2,16 @@
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Service.Contracts;
 using Shared.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
-    public class PlaceService : IPlaceService
+    public class PlaceService(IRepositoryManager repositoryManager, IMapper mapper) : IPlaceService
     {
-        private readonly IRepositoryManager _repositoryManager;
-        private readonly IMapper _mapper;
+        private readonly IRepositoryManager _repositoryManager = repositoryManager;
+        private readonly IMapper _mapper = mapper;
 
-
-        public PlaceService(IRepositoryManager repositoryManager, IMapper mapper)
-        {
-            _repositoryManager = repositoryManager;
-            _mapper = mapper;
-        }
         public async Task<PlaceDto> CreatePlaceAsync(PlaceForCreationDto placeForCreationDto)
         {
             // Check Category Existance First
@@ -55,11 +40,11 @@ namespace Service
             return placeDto;
         }
 
-        public async Task<IEnumerable<PlaceDto>> GetPlacesAsync(bool trackChanges)
+        public async Task<(IEnumerable<PlaceDto> placeDtos, MetaData metaData)> GetPlacesAsync(PlaceQueryString queryString, bool trackChanges)
         {
-            var places = await _repositoryManager.Place.GetPlacesAsync(trackChanges);
-            List<PlaceDto> placesDto = ManualMapEntities(places);
-            return placesDto;
+            PagedList<Place> pagedList = await _repositoryManager.Place.GetPlacesAsync(queryString, trackChanges);
+            List<PlaceDto> placesDto = ManualMapEntities(pagedList);
+            return (placesDto, pagedList.MetaData);
         }
 
         public async Task<IEnumerable<PlaceDto>> GetNearestPlaces(double userLon, double userLat, bool trackChanges)

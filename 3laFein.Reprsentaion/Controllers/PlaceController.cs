@@ -1,29 +1,23 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _3laFein.Reprsentaion.Controllers
 {
     [Route("api/places")]
     [ApiController]
-    [Authorize]
-    public class PlaceController : ControllerBase
+    public class PlaceController(IServiceManager serviceManager) : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
-
-        public PlaceController(IServiceManager serviceManager) => _serviceManager = serviceManager;
+        private readonly IServiceManager _serviceManager = serviceManager;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPlaces()
+        public async Task<IActionResult> GetAllPlaces([FromQuery] PlaceQueryString? queryString)
         {
-            var places = await _serviceManager.PlaceService.GetPlacesAsync(false);
-            return Ok(places);
+            queryString ??= new PlaceQueryString();
+            var (placeDtos, metaData) = await _serviceManager.PlaceService.GetPlacesAsync(queryString, false);
+            Response.Headers.TryAdd("X-Pagination", JsonSerializer.Serialize(metaData));
+            return Ok(placeDtos);
         }
 
         [HttpGet("nearest")]

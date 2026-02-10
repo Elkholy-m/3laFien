@@ -59,9 +59,10 @@ namespace _3laFein.Extensions
 
         public static void ConfigEmailConfiguration(this IServiceCollection services, IConfiguration config)
         {
-            var emailConfig = config.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-            emailConfig!.Password = Environment.GetEnvironmentVariable("IbnBatotaPass");
-            services.AddSingleton(emailConfig!);
+            // todo: Get Email App Pass From Windows
+            var emailConfig = new EmailConfiguration();
+            config.GetSection("EmailConfiguration").Bind(emailConfig);
+            services.AddSingleton(emailConfig);
             services.AddScoped<IEmailSender, EmailSender>();
         }
 

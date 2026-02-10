@@ -2,10 +2,8 @@ using _3laFein.Extensions;
 using _3laFein.Reprsentaion;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
-using NLog;
 using Service.Contracts;
 using Service;
-using Org.BouncyCastle.Crypto.Tls;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +53,10 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions()
 app.UseStaticFiles();
 
 app.UseCors("CorsPolicy");
-app.AddIdentityAuthMiddlewares();
+
+// todo: uncomment this line for the production 
+// suppress the authentication for eazy test end points
+// app.AddIdentityAuthMiddlewares();
 
 app.MapControllers();
 
