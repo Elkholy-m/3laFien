@@ -4,11 +4,6 @@ using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -26,7 +21,7 @@ namespace Service
         public async Task<IEnumerable<FavouritePlaceDto>> GetAllFavPlacesForVisitor(Guid visitorId, bool trackChanges)
         {
             await CheckVisitorExistance(visitorId, trackChanges);
-            var favPlaces = await _repositoryManager.favouritePlace.GetFavouritePlacesForUserAsync(visitorId, trackChanges);
+            var favPlaces = await _repositoryManager.FavouritePlace.GetFavouritePlacesForUserAsync(visitorId, trackChanges);
             return _mapper.Map<IEnumerable<FavouritePlaceDto>>(favPlaces);
         }
 
@@ -42,11 +37,11 @@ namespace Service
         {
             await CheckVisitorExistance(visitorId, false);
             await CheckPlaceExsitace(placeId, false);
-            var favPlaceInDb = await _repositoryManager.favouritePlace.GetFavouritePlaceForUserAsync(visitorId, placeId, false);
+            var favPlaceInDb = await _repositoryManager.FavouritePlace.GetFavouritePlaceForUserAsync(visitorId, placeId, false);
             if (favPlaceInDb is not null)
                 throw new PlaceAlreadyFavouritedConflictException();
             var favPlaceEntity = new FavouritePlaces { VisitorId = visitorId, PlaceId = placeId };
-            _repositoryManager.favouritePlace.CreateFavouritePlace(favPlaceEntity);
+            _repositoryManager.FavouritePlace.CreateFavouritePlace(favPlaceEntity);
             await _repositoryManager.SaveAsync();
             return _mapper.Map<FavouritePlaceDto>(favPlaceEntity);
         }
@@ -56,7 +51,7 @@ namespace Service
             await CheckVisitorExistance(visitorId, trackChanges);
             await CheckPlaceExsitace(placeId, trackChanges);
             var favPlace = await CheckFavPlaceExistance(visitorId, placeId, trackChanges);
-            _repositoryManager.favouritePlace.DeleteFavouritePlaces(favPlace);
+            _repositoryManager.FavouritePlace.DeleteFavouritePlaces(favPlace);
             await _repositoryManager.SaveAsync();
         }
 
@@ -76,7 +71,7 @@ namespace Service
 
         private async Task<FavouritePlaces> CheckFavPlaceExistance(Guid visitorId, Guid placeId, bool trackChanges)
         {
-            var favPlace = await _repositoryManager.favouritePlace.GetFavouritePlaceForUserAsync(visitorId, placeId, trackChanges);
+            var favPlace = await _repositoryManager.FavouritePlace.GetFavouritePlaceForUserAsync(visitorId, placeId, trackChanges);
             if (favPlace is null)
                 throw new FavouritePlaceNotFoundException(visitorId, placeId);
             return favPlace;

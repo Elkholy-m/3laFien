@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Shared.DTO
 {
@@ -20,14 +15,14 @@ namespace Shared.DTO
         public string? Description { get; init; }
 
 
-        [MaxLength(50, ErrorMessage = "The max length for the Country is 50 characters.")]
-        public string? Country { get; init; }
+        [Required(ErrorMessage = "Country Id Is Required.")]
+        public int CountryId { get; init; }
 
-        [MaxLength(50, ErrorMessage = "The max length for the City is 50 characters.")]
-        public string? City { get; init; }
+        [Required(ErrorMessage = "City Id Is Required.")]
+        public int CityId { get; init; }
 
-        [MaxLength(150, ErrorMessage = "The max length for the Street is 50 characters.")]
-        public string? Street { get; init; }
+        [Required(ErrorMessage = "State Id Is Required.")]
+        public int StateId { get; init; }
 
         // Longitude must be between -180.0 and 180.0
         [Range(-180.0, 180.0, ErrorMessage = "Longitude must be between -180 and 180.")]

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
+    public class CategoryRepository : RepositoryBase<RepositoryContext, Category>, ICategoryRepository
     {
         public CategoryRepository(RepositoryContext context) : base(context)
         {

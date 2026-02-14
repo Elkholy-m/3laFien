@@ -1,10 +1,4 @@
 ﻿using Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository
 {
@@ -18,9 +12,12 @@ namespace Repository
         private readonly Lazy<ReviewRepository> _reviewRepository;
         private readonly Lazy<PlaceScheduleRepository> _placeScheduleRepository;
         private readonly Lazy<FavouritePlaceRepository> _favouritePlaceRepository;
+        private readonly Lazy<ExternalCityRepository> _cityRepository;
+        private readonly Lazy<ExternalStateRepository> _stateRepository;
+        private readonly Lazy<ExternalCountryRepository> _countryRepository;
         private readonly RepositoryContext _context;
 
-        public RepositoryManager(RepositoryContext context)
+        public RepositoryManager(RepositoryContext context, PlaceDbContext placeContext)
         {
             _context = context;
             _socialAccountRepository = new Lazy<SocialAccountRepository>(() => new SocialAccountRepository(context));
@@ -31,6 +28,9 @@ namespace Repository
             _reviewRepository = new Lazy<ReviewRepository>(() => new ReviewRepository(context));
             _placeScheduleRepository = new Lazy<PlaceScheduleRepository>(() => new PlaceScheduleRepository(context));
             _favouritePlaceRepository = new Lazy<FavouritePlaceRepository>(() => new FavouritePlaceRepository(context));
+            _countryRepository = new Lazy<ExternalCountryRepository>(() => new (placeContext));
+            _stateRepository = new Lazy<ExternalStateRepository>(() => new (placeContext));
+            _cityRepository = new Lazy<ExternalCityRepository>(() => new (placeContext));
         }
 
         public ISocialAccountRepository SocialAccount => _socialAccountRepository.Value;
@@ -44,9 +44,16 @@ namespace Repository
         public ICategoryRepository Category => _categoryRepository.Value;
 
         public IReviewRepository Review => _reviewRepository.Value;
+
         public IPlaceScheduleRepository PlaceSchedule => _placeScheduleRepository.Value;
 
-        public IFavouritePlaceRepository favouritePlace => _favouritePlaceRepository.Value;
+        public IFavouritePlaceRepository FavouritePlace => _favouritePlaceRepository.Value;
+
+        public IExternalCityRepository CityRepository => _cityRepository.Value;
+
+        public IExternalStateRepository StateRepository => _stateRepository.Value;
+
+        public IExternalCountryRepository CountryRepository => _countryRepository.Value;
 
         public async Task SaveAsync() => await _context.SaveChangesAsync();
 

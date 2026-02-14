@@ -8,6 +8,7 @@ using Service;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.ConfigHttpClients();
 builder.Services.ConfigCors();
 builder.Services.ConfigIIS();
 builder.Services.ConfigSqlServer(builder.Configuration);
@@ -60,7 +61,7 @@ app.UseCors("CorsPolicy");
 
 app.MapControllers();
 
-app.MigrateDatabase(app.Services.GetRequiredService<ILoggerManager>());
+await app.MigrateDatabase(app.Services.GetRequiredService<ILoggerManager>());
 
 app.MapGroup("/api")
    .MapIdentityUserEndpoints()

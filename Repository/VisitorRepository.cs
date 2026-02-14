@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    internal class VisitorRepository :RepositoryBase<Visitor>, IVisitorRepository
+    internal class VisitorRepository :RepositoryBase<RepositoryContext, Visitor>, IVisitorRepository
     {
         public VisitorRepository(RepositoryContext context) : base(context) { }
 

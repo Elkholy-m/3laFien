@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
 using Contracts;
-using EmailService;
 using Entities.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using NETCore.MailKit.Core;
 using Service.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -30,14 +23,21 @@ namespace Service
         private readonly Lazy<PlaceScheduleService> _placeScheduleService;
         private readonly Lazy<FavouritePlaceService> _favouritePlaceService;
 
-        public ServiceManager(EmailConfiguration emailConfig, IConfiguration config, UserManager<User> userManager, IOptions<AppSettings> appSettings, IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, IWebHostEnvironment webHost)
+        public ServiceManager(
+                IConfiguration config,
+                UserManager<User> userManager,
+                IOptions<AppSettings> appSettings,
+                IRepositoryManager repositoryManager,
+                IMapper mapper,
+                IWebHostEnvironment webHost,
+                IHttpClientFactory clientFactory)
         {
             _visitorService = new Lazy<VisitorService>(() => new VisitorService(repositoryManager, mapper, userManager, webHost));
             _socialAccountService = new Lazy<SocialAccountService>(() => new SocialAccountService(repositoryManager, mapper));
             _imageService = new Lazy<ImageService>(() => new ImageService(webHost));
             _placeImageService = new Lazy<PlaceImageService>(() => new PlaceImageService(repositoryManager, mapper));
             _categoryService = new Lazy<CategoryService>(() => new CategoryService(repositoryManager, mapper));
-            _placeService = new Lazy<PlaceService>(() => new PlaceService(repositoryManager, mapper));
+            _placeService = new Lazy<PlaceService>(() => new PlaceService(repositoryManager, mapper, clientFactory));
             _reviewService = new Lazy<ReviewService>(() => new ReviewService(repositoryManager, mapper, userManager));
             _tokenService = new Lazy<TokenService>(() => new TokenService(appSettings, userManager));
             _authenticationService = new Lazy<AuthenticationService>(() => new AuthenticationService(userManager, _tokenService.Value, repositoryManager, config));

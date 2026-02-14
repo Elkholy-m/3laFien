@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Shared.DTO
+﻿namespace Shared.DTO
 {
     public record PlaceDto
     {
         public Guid PlaceId { get; init; }
         public string? Name { get; init; }
         public string? Description { get; init; }
-        public string? Country { get; init; }
-        public string? City { get; init; }
-        public string? Street { get; init; }
+        public int? CountryId { get; init; }
+        public int? CityId { get; init; }
+        public int? StateId { get; init; }
+        public int? CategoryId { get; init; }
         public string? MainImageUrl { get; set; }
         public bool IsOpened { get; set; }
         public double Longitude { get; init; }

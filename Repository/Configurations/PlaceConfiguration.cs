@@ -2,11 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NetTopologySuite.Geometries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Configurations
 {
@@ -23,9 +18,9 @@ namespace Repository.Configurations
                     PlaceId = new Guid("615d0417-1d1b-4541-968c-5bb9927e764a"),
                     Name = "Pyramids",
                     Description = "Pyramids of giza",
-                    Country = "Egypt",
-                    City = "Giza",
-                    Street = "N/A",
+                    CountryId = 65,
+                    StateId = 5,
+                    CityId = 1,
                     Price = 200,
                     DiscountPercentage = 2,
                     CreatedAt = new DateTime(2000, 4, 4),
@@ -38,9 +33,9 @@ namespace Repository.Configurations
                     PlaceId = new Guid("7580dc3b-88c6-4344-9627-c8941a1959a1"),
                     Name = "Hotel",
                     Description = "book to stay and do Islamic rituals",
-                    Country = "KSA",
-                    City = "Mecca",
-                    Street = "N/A",
+                    CountryId = 25,
+                    StateId = 2,
+                    CityId = 5,
                     Price = 300,
                     DiscountPercentage = 4,
                     CreatedAt = new DateTime(1990, 4, 4),

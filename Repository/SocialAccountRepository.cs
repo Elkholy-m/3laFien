@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    internal class SocialAccountRepository : RepositoryBase<SocialAccount>, ISocialAccountRepository
+    internal class SocialAccountRepository : RepositoryBase<RepositoryContext, SocialAccount>, ISocialAccountRepository
     {
         public SocialAccountRepository(RepositoryContext context) : base(context) { }
 

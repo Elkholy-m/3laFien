@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using System.Text.Json;
+using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
@@ -7,15 +9,18 @@ using Shared.DTO;
 
 namespace Service
 {
-    public class PlaceService(IRepositoryManager repositoryManager, IMapper mapper) : IPlaceService
+    public class PlaceService(IRepositoryManager repositoryManager,
+            IMapper mapper, IHttpClientFactory httpClientFactory) : IPlaceService
     {
         private readonly IRepositoryManager _repositoryManager = repositoryManager;
         private readonly IMapper _mapper = mapper;
+        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
         public async Task<PlaceDto> CreatePlaceAsync(PlaceForCreationDto placeForCreationDto)
         {
             // Check Category Existance First
             await CheckCategoryExistance(placeForCreationDto);
+            await CheckLocationExistance(placeForCreationDto);
 
             var place = _mapper.Map<Place>(placeForCreationDto);
             _repositoryManager.Place.CreatePlaceAsync(place);
@@ -40,8 +45,24 @@ namespace Service
             return placeDto;
         }
 
-        public async Task<(IEnumerable<PlaceDto> placeDtos, MetaData metaData)> GetPlacesAsync(PlaceQueryString queryString, bool trackChanges)
+        public async Task<(IEnumerable<PlaceDto> placeDtos, MetaData metaData)>
+            GetPlacesAsync(PlaceQueryString queryString, bool trackChanges)
         {
+            if (queryString.CountryId == null &&
+                    queryString.UserLat != null && queryString.UserLon != null) {
+                var httpClient = _httpClientFactory.CreateClient("Nominatim");
+                var url = $"reverse?lat={queryString.UserLat}&lon={queryString.UserLon}&format=json";
+                string response = await  httpClient.GetStringAsync(url);
+                var countryCode = JsonDocument.Parse(response).RootElement
+                    .GetProperty("address")
+                    .GetProperty("country_code").GetString();
+
+                var country = await _repositoryManager.CountryRepository
+                    .GetCountryByCode(countryCode ?? string.Empty, false);
+
+                queryString.CountryId = country?.Id;
+            }
+
             PagedList<Place> pagedList = await _repositoryManager.Place.GetPlacesAsync(queryString, trackChanges);
             List<PlaceDto> placesDto = ManualMapEntities(pagedList);
             return (placesDto, pagedList.MetaData);
@@ -70,6 +91,20 @@ namespace Service
             if (category is null)
                 throw new CategoryNotFoundException(placeForManipulation.CategoryId);
         }
+
+        private async Task CheckLocationExistance(PlaceForCreationDto placeForCreationDto) {
+            var city = _repositoryManager
+                .CityRepository
+                .GetCity(placeForCreationDto.CountryId,
+                        placeForCreationDto.StateId, placeForCreationDto.CityId, false);
+
+            if (city == null) {
+                throw new LocationNotFoundException(placeForCreationDto.CountryId,
+                        placeForCreationDto.StateId,
+                        placeForCreationDto.CityId);
+            }
+        }
+
         private async Task<Place> CheckPlaceExistance(Guid placeId, bool trackChanges)
         {
             var place = await _repositoryManager.Place.GetPlaceAsync(placeId, trackChanges);
@@ -77,6 +112,7 @@ namespace Service
                 throw new PlaceNotFoundException(placeId);
             return place;
         }
+
         private PlaceDto ManualMapEntity(Place place)
         {
             var placeDto = _mapper.Map<PlaceDto>(place);
@@ -89,13 +125,17 @@ namespace Service
                 placeDto.TotalReviews = reviewsCount;
                 placeDto.Rate = place.Reviews.Sum(rev => (float)rev.Rating) / reviewsCount;
             };
-            var todayPlaceSchedule = place.PlaceSchedules!.Where(schedule => schedule.WeekDay.Equals(DateTime.UtcNow.DayOfWeek)).SingleOrDefault();
+            var now = DateTime.UtcNow;
+            var dbWeekDay = ((int)now.DayOfWeek + 1) % 7;
+            var todayPlaceSchedule = place.PlaceSchedules!
+                .SingleOrDefault(schedule => (int)schedule.WeekDay == dbWeekDay);
             if (todayPlaceSchedule is not null &&
-                DateTime.UtcNow.TimeOfDay > todayPlaceSchedule.OpenTime.ToTimeSpan() &&
-                DateTime.UtcNow.TimeOfDay < todayPlaceSchedule.ClosedTime.ToTimeSpan())
+                DateTime.UtcNow.TimeOfDay > todayPlaceSchedule.OpenTime &&
+                DateTime.UtcNow.TimeOfDay < todayPlaceSchedule.ClosedTime)
                 placeDto.IsOpened = true;
             return placeDto;
         }
+
         private List<PlaceDto> ManualMapEntities(IEnumerable<Place> places)
         {
             var placesDto = new List<PlaceDto>();

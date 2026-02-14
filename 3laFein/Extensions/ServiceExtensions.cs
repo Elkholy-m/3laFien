@@ -2,16 +2,12 @@
 using EmailService;
 using Entities.Models;
 using LoggerService;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Repository;
 using Service;
 using Service.Contracts;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Security;
 
 namespace _3laFein.Extensions
 {
@@ -49,6 +45,11 @@ namespace _3laFein.Extensions
                           .MigrationsAssembly("3laFein")
                 );
             });
+
+            services.AddDbContext<PlaceDbContext>(opt => {
+                    opt.UseSqlServer(config.GetConnectionString("placeConnection"),
+                            x => x.MigrationsAssembly("3laFein"));
+                    });
         }
 
         public static void  ConfigLoggerService(this IServiceCollection services)
@@ -116,6 +117,20 @@ namespace _3laFein.Extensions
                     }
                 });
             });
+
+        }
+
+        public static void ConfigHttpClients(this IServiceCollection services) {
+            services.AddHttpClient("Nominatim", client =>
+                    {
+                    client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                            "MyApp/1.0 (midoelkholy03@gmail.com)"
+                            );
+                    });
+            services.AddHttpClient("geo-locations", client => {
+                    client.BaseAddress = new Uri("https://cdn.geo-locations.com/");
+                    });
         }
     }
 }

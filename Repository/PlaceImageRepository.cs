@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class PlaceImageRepository : RepositoryBase<PlaceImage>, IPlaceImageRepository
+    public class PlaceImageRepository : RepositoryBase<RepositoryContext, PlaceImage>, IPlaceImageRepository
     {
         public PlaceImageRepository(RepositoryContext context) : base(context) { }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Contracts
+﻿namespace Contracts
 {
     public interface IRepositoryManager
     {
@@ -15,7 +9,10 @@ namespace Contracts
         ICategoryRepository Category { get; }
         IReviewRepository Review { get; }
         IPlaceScheduleRepository PlaceSchedule { get; }
-        IFavouritePlaceRepository favouritePlace { get; }
+        IFavouritePlaceRepository FavouritePlace { get; }
+        IExternalCityRepository CityRepository { get; }
+        IExternalStateRepository StateRepository { get; }
+        IExternalCountryRepository CountryRepository { get; }
         Task SaveAsync();
         Task ExecuteInTransactionAsync(Func<Task> action);
     }

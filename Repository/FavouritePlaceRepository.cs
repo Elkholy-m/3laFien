@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class FavouritePlaceRepository : RepositoryBase<FavouritePlaces>, IFavouritePlaceRepository
+    public class FavouritePlaceRepository : RepositoryBase<RepositoryContext, FavouritePlaces>, IFavouritePlaceRepository
     {
         public FavouritePlaceRepository(RepositoryContext context) : base(context) { }
 

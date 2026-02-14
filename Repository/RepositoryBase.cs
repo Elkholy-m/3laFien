@@ -1,20 +1,20 @@
 ﻿using Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Linq;
-using System;
 
 namespace Repository
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public class RepositoryBase<TContext, T> : IRepositoryBase<T> 
+        where T : class 
+        where TContext: DbContext
     {
-        private readonly RepositoryContext _context;
+        private readonly TContext _context;
         internal DbSet<T> dbSet;
 
-        public RepositoryBase(RepositoryContext context)
+        public RepositoryBase(TContext context)
         {
             _context = context;
-            this.dbSet = _context.Set<T>();
+            dbSet = _context.Set<T>();
         }
 
         public IQueryable<T> FindAll(bool trackChanges) =>
@@ -39,7 +39,7 @@ namespace Repository
             }
             if (!string.IsNullOrEmpty(includes))
             {
-                foreach (var includeProperty in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var includeProperty in includes.Split([','], StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProperty);
                 }
@@ -52,7 +52,7 @@ namespace Repository
             IQueryable<T> query = dbSet;
             if (!string.IsNullOrEmpty(includes))
             {
-                foreach (var includeProperty in includes.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var includeProperty in includes.Split([','], StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProperty);
                 }

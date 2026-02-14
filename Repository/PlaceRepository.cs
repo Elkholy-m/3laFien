@@ -7,7 +7,7 @@ using Shared.DTO;
 
 namespace Repository
 {
-    public class PlaceRepository(RepositoryContext context) : RepositoryBase<Place>(context), IPlaceRepository
+    public class PlaceRepository(RepositoryContext context) : RepositoryBase<RepositoryContext, Place>(context), IPlaceRepository
     {
         public void CreatePlaceAsync(Place place) => Create(place);
 
@@ -19,12 +19,71 @@ namespace Repository
 
         public async Task<PagedList<Place>> GetPlacesAsync(PlaceQueryString queryString, bool trackChanges)
         {
-            var query = FindAllByConditionWithIncludes(p => p.IsDeleted == false, trackChanges, "PlaceImages,Reviews,PlaceSchedules")
-                 .OrderBy(p => p.Name)
-                 .Skip((queryString.PageNumber - 1) * queryString.PageSize)
-                 .Take(queryString.PageSize);
+            // === Apply Filtering By Price Range And Min Rate ===
+            var query = FindAllByConditionWithIncludes(
+                    p => p.IsDeleted == false &&
+                    queryString.MinPrice <= p.Price - (p.Price * p.DiscountPercentage / 100) &&
+                    queryString.MaxPrice >= p.Price - (p.Price * p.DiscountPercentage / 100) &&
+                    queryString.MinRate <= p.Rate,
+                    trackChanges, "PlaceImages,Reviews,PlaceSchedules");
 
-            var count = await FindByCondition(p => p.IsDeleted == false, trackChanges).CountAsync();
+            // === Filter The Open Only Places ===
+            if (queryString.OpenOnly.HasValue){
+                var now = DateTime.UtcNow;
+                var dbWeekDay = ((int)now.DayOfWeek + 1) % 7;
+                var currentTime = now.TimeOfDay;
+
+                // Filter Opened Places Only
+                if (queryString.OpenOnly.Value) {
+                    query = query.Where(place => place.PlaceSchedules!.Any(schedule =>
+                                (int)schedule.WeekDay == dbWeekDay &&
+                                currentTime > schedule.OpenTime &&
+                                currentTime < schedule.ClosedTime));
+                } // Filter Closed Places Only
+                else {
+                    query = query.Where(place => place.PlaceSchedules!.Any(schedule =>
+                                (int)schedule.WeekDay != dbWeekDay ||
+                                currentTime < schedule.OpenTime ||
+                                currentTime > schedule.ClosedTime));
+
+                }
+            }
+
+            // === Filter The Places That Have Discount ===
+            if (queryString.DiscountOnly.HasValue && queryString.DiscountOnly == true) {
+                query = query.Where(place => place.DiscountPercentage != 0);
+            }
+
+            // === Filter By Category ===
+            if (queryString.CategoryId.HasValue) {
+                query = query.Where(place => place.CategoryId == queryString.CategoryId.Value);
+            }
+
+            // === Filter By Country ===
+            if (queryString.CountryId != null) {
+                query = query.Where(place => place.CountryId == queryString.CountryId);
+            }
+
+            // === Filter By State ===
+            if (queryString.StateId != null) {
+                query = query.Where(place => place.StateId == queryString.StateId);
+            }
+
+            // === Filter By City ===
+            if (queryString.CityId != null) {
+                query = query.Where(place => place.CityId == queryString.CityId);
+            }
+
+            var count = await query.CountAsync();
+
+            //=== (Ordering logic should be before the pagination) ===//
+
+            // === Pagination Logic ===
+            query = query
+                .OrderBy(p => p.Name)
+                .Skip((queryString.PageNumber - 1) * queryString.PageSize)
+                .Take(queryString.PageSize);
+
 
             var pagedList = PagedList<Place>.ToPagedList(await query.ToListAsync(),
                     count,

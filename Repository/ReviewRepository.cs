@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class ReviewRepository : RepositoryBase<Review>, IReviewRepository
+    public class ReviewRepository : RepositoryBase<RepositoryContext, Review>, IReviewRepository
     {
         public ReviewRepository(RepositoryContext context) : base(context)
         {
