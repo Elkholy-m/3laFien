@@ -8,6 +8,6 @@ public class MetaData
 
     public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
 
-    public bool HasPrevious => PageNumber > 1;
-    public bool HasNext => PageNumber < TotalPages;
+    public bool HasPrevious => PageNumber > 1 && PageNumber < TotalPages + 2;
+    public bool HasNext => PageNumber < TotalPages && PageNumber > 0;
 }

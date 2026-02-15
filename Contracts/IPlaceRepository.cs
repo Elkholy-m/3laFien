@@ -5,7 +5,11 @@ namespace Contracts
 {
     public interface IPlaceRepository
     {
-        Task<PagedList<Place>> GetPlacesAsync(PlaceQueryString queryString, bool trackChanges);
+        Task<IEnumerable<Place>> GetAllPlacesToRebuildAsync();
+        Task<PagedList<Place>> 
+            GetPlacesAsync(PlaceQueryString queryString,
+                    bool trackChanges, IEnumerable<Guid>? ids = null);
+
         Task<Place?> GetPlaceAsync(Guid placeId, bool trackChanges);
         void CreatePlaceAsync(Place place);
         void UpdatePlace(Place place);

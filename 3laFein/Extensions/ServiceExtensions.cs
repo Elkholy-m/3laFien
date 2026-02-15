@@ -74,6 +74,7 @@ namespace _3laFein.Extensions
 
         public static void ConfigServiceManager(this IServiceCollection services)
         {
+            services.AddSingleton<ISearchService, SearchService>();
             services.AddScoped<IServiceManager, ServiceManager>();
         }
 

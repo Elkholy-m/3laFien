@@ -1,0 +1,94 @@
+using Entities.Models;
+
+namespace Repository.Extensions;
+
+public static class PlaceExtensionsQuery
+{
+    // === Searching from name and description ===
+    public static IQueryable<Place> FilterByIds(this IQueryable<Place> query,
+            string? searchTerm, IEnumerable<Guid>? ids)
+    {
+        if (ids != null && searchTerm != null) {
+            query = query.Where(place => ids.Contains(place.PlaceId));
+        }
+        return query;
+    }
+
+    // === Filtering By Price Range And Min Rate ===
+    public static IQueryable<Place> FilterByRange(this IQueryable<Place> query,
+            decimal minPrice, decimal maxPrice, float minRate)
+    {
+       return query.Where(place =>
+        minPrice <= place.Price - (place.Price * place.DiscountPercentage / 100) &&
+        maxPrice >= place.Price - (place.Price * place.DiscountPercentage / 100) &&
+        minRate <= place.Rate);
+    }
+
+    // === Filter The Open Only Places ===
+    public static IQueryable<Place> FilterByOpenOnly(this IQueryable<Place> query, bool? openOnly) {
+        if (openOnly.HasValue){
+            var now = DateTime.UtcNow;
+            var dbWeekDay = ((int)now.DayOfWeek + 1) % 7;
+            var currentTime = now.TimeOfDay;
+
+            // Filter Opened Places Only
+            if (openOnly.Value) {
+                query = query.Where(place => place.PlaceSchedules!.Any(schedule =>
+                            (int)schedule.WeekDay == dbWeekDay &&
+                            currentTime > schedule.OpenTime &&
+                            currentTime < schedule.ClosedTime));
+            } // Filter Closed Places Only
+            else {
+                query = query.Where(place => place.PlaceSchedules!.All(schedule =>
+                            (int)schedule.WeekDay != dbWeekDay ||
+                            currentTime < schedule.OpenTime ||
+                            currentTime > schedule.ClosedTime));
+
+            }
+        }
+        return query;
+    }
+
+    // === Filter The Places That Have Discount ===
+    public static IQueryable<Place> FilterByDiscount(this IQueryable<Place> query, bool? discountOnly) {
+            if (discountOnly.HasValue) {
+                if (discountOnly.Value)
+                    query = query.Where(place => place.DiscountPercentage != 0);
+                else 
+                    query = query.Where(place => place.DiscountPercentage == 0);
+            }
+            return query;
+    }
+
+    // === Filter By Category ===
+    public static IQueryable<Place> FilterByCategory(this IQueryable<Place> query, int? categoryId) {
+        if (categoryId.HasValue) {
+            query = query.Where(place => place.CategoryId == categoryId.Value);
+        }
+        return query;
+    }
+
+    // === Filter By Country ===
+    public static IQueryable<Place> FilterByCountry(this IQueryable<Place> query, int? countryId) {
+        if (countryId != null) {
+            query = query.Where(place => place.CountryId == countryId);
+        }
+        return query;
+    }
+
+    // === Filter By State ===
+    public static IQueryable<Place> FilterByState(this IQueryable<Place> query, int? stateId) {
+        if (stateId != null) {
+            query = query.Where(place => place.StateId == stateId);
+        }
+        return query;
+    }
+
+    // === Filter By City ===
+    public static IQueryable<Place> FilterByCity(this IQueryable<Place> query, int? cityId) {
+        if (cityId != null) {
+            query = query.Where(place => place.CityId == cityId);
+        }
+        return query;
+    }
+}

@@ -25,4 +25,6 @@ public record class PlaceQueryString : QueryString
     public int? CountryId { get; set; } = null;
     public int? StateId { get; set; } = null;
     public int? CityId { get; set; } = null;
+
+    public string? SearchTerm { get; set; } = null;
 }

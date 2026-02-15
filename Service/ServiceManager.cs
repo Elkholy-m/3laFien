@@ -32,17 +32,18 @@ namespace Service
                 IWebHostEnvironment webHost,
                 IHttpClientFactory clientFactory)
         {
-            _visitorService = new Lazy<VisitorService>(() => new VisitorService(repositoryManager, mapper, userManager, webHost));
-            _socialAccountService = new Lazy<SocialAccountService>(() => new SocialAccountService(repositoryManager, mapper));
-            _imageService = new Lazy<ImageService>(() => new ImageService(webHost));
-            _placeImageService = new Lazy<PlaceImageService>(() => new PlaceImageService(repositoryManager, mapper));
-            _categoryService = new Lazy<CategoryService>(() => new CategoryService(repositoryManager, mapper));
-            _placeService = new Lazy<PlaceService>(() => new PlaceService(repositoryManager, mapper, clientFactory));
-            _reviewService = new Lazy<ReviewService>(() => new ReviewService(repositoryManager, mapper, userManager));
-            _tokenService = new Lazy<TokenService>(() => new TokenService(appSettings, userManager));
-            _authenticationService = new Lazy<AuthenticationService>(() => new AuthenticationService(userManager, _tokenService.Value, repositoryManager, config));
-            _placeScheduleService = new Lazy<PlaceScheduleService>(() => new PlaceScheduleService(repositoryManager, mapper));
-            _favouritePlaceService = new Lazy<FavouritePlaceService>(() => new FavouritePlaceService(repositoryManager, mapper));
+            _visitorService = new Lazy<VisitorService>(() => new (repositoryManager, mapper, userManager, webHost));
+            _socialAccountService = new Lazy<SocialAccountService>(() => new (repositoryManager, mapper));
+            _imageService = new Lazy<ImageService>(() => new (webHost));
+            _placeImageService = new Lazy<PlaceImageService>(() => new (repositoryManager, mapper));
+            _categoryService = new Lazy<CategoryService>(() => new (repositoryManager, mapper));
+            _placeService = new Lazy<PlaceService>(() => new (repositoryManager, mapper, clientFactory));
+            _reviewService = new Lazy<ReviewService>(() => new (repositoryManager, mapper, userManager));
+            _tokenService = new Lazy<TokenService>(() => new (appSettings, userManager));
+            _authenticationService = new Lazy<AuthenticationService>(() => new (userManager,
+                        _tokenService.Value, repositoryManager, config));
+            _placeScheduleService = new Lazy<PlaceScheduleService>(() => new (repositoryManager, mapper));
+            _favouritePlaceService = new Lazy<FavouritePlaceService>(() => new (repositoryManager, mapper));
         }
 
         public IVisitorService VisitorService => _visitorService.Value;

@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using System.Text.Json;
+﻿using System.Text.Json;
 using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
@@ -16,7 +15,10 @@ namespace Service
         private readonly IMapper _mapper = mapper;
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-        public async Task<PlaceDto> CreatePlaceAsync(PlaceForCreationDto placeForCreationDto)
+        public async Task<IEnumerable<Place>> GetAllPlacesToRebuildIndex() =>
+            await _repositoryManager.Place.GetAllPlacesToRebuildAsync();
+
+        public async Task<PlaceDto> CreatePlaceAsync(PlaceForCreationDto placeForCreationDto, ISearchService searchService)
         {
             // Check Category Existance First
             await CheckCategoryExistance(placeForCreationDto);
@@ -25,17 +27,18 @@ namespace Service
             var place = _mapper.Map<Place>(placeForCreationDto);
             _repositoryManager.Place.CreatePlaceAsync(place);
             await _repositoryManager.SaveAsync();
+            await searchService.IndexPlace(place);
 
             return _mapper.Map<PlaceDto>(place);
         }
 
-        public async Task DeletePlaceAsync(Guid placeId, bool trackChanges)
+        public async Task DeletePlaceAsync(Guid placeId, bool trackChanges, ISearchService searchService)
         {
             Place place = await CheckPlaceExistance(placeId, trackChanges);
 
             _repositoryManager.Place.DeletePlace(place);
-
             await _repositoryManager.SaveAsync();
+            await searchService.DeleteIndex(placeId);
         }
 
         public async Task<PlaceDto> GetPlaceAsync(Guid placeId, bool trackChanges)
@@ -46,8 +49,13 @@ namespace Service
         }
 
         public async Task<(IEnumerable<PlaceDto> placeDtos, MetaData metaData)>
-            GetPlacesAsync(PlaceQueryString queryString, bool trackChanges)
+            GetPlacesAsync(PlaceQueryString queryString, bool trackChanges, ISearchService searchService)
         {
+            IReadOnlyList<Guid>? ids = null;
+            if (queryString.SearchTerm != null) {
+                ids = await searchService.SearchPlaces(queryString.SearchTerm);
+            }
+
             if (queryString.CountryId == null &&
                     queryString.UserLat != null && queryString.UserLon != null) {
                 var httpClient = _httpClientFactory.CreateClient("Nominatim");
@@ -63,7 +71,7 @@ namespace Service
                 queryString.CountryId = country?.Id;
             }
 
-            PagedList<Place> pagedList = await _repositoryManager.Place.GetPlacesAsync(queryString, trackChanges);
+            PagedList<Place> pagedList = await _repositoryManager.Place.GetPlacesAsync(queryString, trackChanges, ids);
             List<PlaceDto> placesDto = ManualMapEntities(pagedList);
             return (placesDto, pagedList.MetaData);
         }
@@ -75,7 +83,7 @@ namespace Service
             return placesDto;
         }
 
-        public async Task UpdatePlaceAsync(Guid placeId, PlaceForUpdateDto placeForUpdateDto, bool trackChanges)
+        public async Task<PlaceDto> UpdatePlaceAsync(Guid placeId, PlaceForUpdateDto placeForUpdateDto, bool trackChanges, ISearchService searchService)
         {
             // Check Category Existance First
             await CheckCategoryExistance(placeForUpdateDto);
@@ -83,6 +91,8 @@ namespace Service
 
             _mapper.Map(placeForUpdateDto, place);
             await _repositoryManager.SaveAsync();
+            await searchService.IndexPlace(place);
+            return _mapper.Map<PlaceDto>(place);
         }
 
         private async Task CheckCategoryExistance(PlaceForManipulation placeForManipulation)

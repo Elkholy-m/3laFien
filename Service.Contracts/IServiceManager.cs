@@ -1,11 +1,4 @@
-﻿using Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Service.Contracts
+﻿namespace Service.Contracts
 {
     public interface IServiceManager
     {
@@ -17,7 +10,6 @@ namespace Service.Contracts
         IPlaceService PlaceService { get; }
         ICategoryService CategoryService { get; }
         IReviewService ReviewService { get; }
-
         IPlaceScheduleService PlaceScheduleService { get; }
         IFavouritePlaceService FavoritePlaceService { get; }
     }

@@ -7,15 +7,27 @@ namespace _3laFein.Reprsentaion.Controllers
 {
     [Route("api/places")]
     [ApiController]
-    public class PlaceController(IServiceManager serviceManager) : ControllerBase
+    public class PlaceController(IServiceManager serviceManager, ISearchService searchService)
+        : ControllerBase
     {
         private readonly IServiceManager _serviceManager = serviceManager;
+
+        // THIS END POINT SHOULD BE FOR ADMINS ONLY TO REBUILD INDEX
+        // [Authorize("Admin")]
+        [HttpGet("rebuild")]
+        public async Task<IActionResult> RebuildSearchIndex()
+        {
+
+            var places = await _serviceManager.PlaceService.GetAllPlacesToRebuildIndex();
+            await searchService.RebuildIndex(places);
+            return Ok($"SUCCESSFUL REBUILD {places.Count()} DOCUMENTS OF INDEX");
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllPlaces([FromQuery] PlaceQueryString? queryString)
         {
-            queryString ??= new PlaceQueryString();
-            var (placeDtos, metaData) = await _serviceManager.PlaceService.GetPlacesAsync(queryString, false);
+            var (placeDtos, metaData) = await _serviceManager.PlaceService.
+                GetPlacesAsync(queryString ?? new PlaceQueryString(), false, searchService);
             Response.Headers.TryAdd("X-Pagination", JsonSerializer.Serialize(metaData));
             return Ok(placeDtos);
         }
@@ -37,21 +49,21 @@ namespace _3laFein.Reprsentaion.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePlace([FromBody] PlaceForCreationDto placeForCreationDto)
         {
-            var place = await _serviceManager.PlaceService.CreatePlaceAsync(placeForCreationDto);
+            var place = await _serviceManager.PlaceService.CreatePlaceAsync(placeForCreationDto, searchService);
             return CreatedAtRoute("GetPlaceById", new { placeId = place.PlaceId }, place);
         }
 
         [HttpPut("{placeId:guid}")]
         public async Task<IActionResult> UpdatePlace(Guid placeId, PlaceForUpdateDto placeForUpdateDto)
         {
-            await _serviceManager.PlaceService.UpdatePlaceAsync(placeId, placeForUpdateDto, true);
+            await _serviceManager.PlaceService.UpdatePlaceAsync(placeId, placeForUpdateDto, true, searchService);
             return NoContent();
         }
 
         [HttpDelete("{placeId:guid}")]
         public async Task<IActionResult> DeletePlace(Guid placeId)
         {
-            await _serviceManager.PlaceService.DeletePlaceAsync(placeId, true);
+            await _serviceManager.PlaceService.DeletePlaceAsync(placeId, true, searchService);
             return NoContent();
         }
 
