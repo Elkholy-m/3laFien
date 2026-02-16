@@ -34,7 +34,9 @@ namespace Repository
                 .FilterByCategory(queryString.CategoryId)
                 .FilterByCountry(queryString.CountryId)
                 .FilterByState(queryString.StateId)
-                .FilterByCity(queryString.CityId);
+                .FilterByCity(queryString.CityId)
+                .Sort(queryString.OrderBy!);
+                
 
             var count = await query.CountAsync();
 
@@ -42,7 +44,6 @@ namespace Repository
 
             // === Pagination Logic ===
             query = query
-                .OrderBy(p => p.Name)
                 .Skip((queryString.PageNumber - 1) * queryString.PageSize)
                 .Take(queryString.PageSize);
 

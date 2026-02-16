@@ -34,4 +34,6 @@ public abstract record class QueryString
                 _pageSize = value;
         }
     }
+
+    public string? OrderBy { get; set; }
 }

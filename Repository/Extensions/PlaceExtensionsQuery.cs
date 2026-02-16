@@ -1,4 +1,5 @@
 using Entities.Models;
+using System.Linq.Dynamic.Core;
 
 namespace Repository.Extensions;
 
@@ -90,5 +91,17 @@ public static class PlaceExtensionsQuery
             query = query.Where(place => place.CityId == cityId);
         }
         return query;
+    }
+
+    public static IQueryable<Place> Sort(this IQueryable<Place> query, string? orderBy) {
+        if (string.IsNullOrWhiteSpace(orderBy))
+            return query.OrderByDescending(x => x.Rate);
+
+        var sortingQuery = QueryGenerator.Parse<Place>(orderBy);
+
+        if (string.IsNullOrWhiteSpace(sortingQuery))
+            return query.OrderByDescending(x => x.Rate);
+        
+        return query.OrderBy(sortingQuery);
     }
 }
