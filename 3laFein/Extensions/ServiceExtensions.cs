@@ -86,6 +86,7 @@ namespace _3laFein.Extensions
 
         public static void ConfigSwagger(this IServiceCollection services)
         {
+            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(setup =>
             {
                 setup.SwaggerDoc("v1", new OpenApiInfo
