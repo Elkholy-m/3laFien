@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\PLACE_INDEX\" />
     <Folder Include="wwwroot\places\full\" />
     <Folder Include="wwwroot\places\medium\" />
     <Folder Include="wwwroot\places\thumbnail\" />

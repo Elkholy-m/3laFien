@@ -12,7 +12,6 @@ namespace _3laFein.Reprsentaion.Controllers
 {
     [Route("api/categories")]
     [ApiController]
-    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
