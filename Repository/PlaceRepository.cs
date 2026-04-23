@@ -28,14 +28,14 @@ namespace Repository
             IQueryable<Place> query = FindByConditionWithIncludes(x => !x.IsDeleted, trackChanges,
                     "PlaceImages,Reviews,PlaceSchedules")
                 .FilterByIds(queryString.SearchTerm, ids)
-                .FilterByRange(queryString.MinPrice, queryString.MaxPrice, queryString.MinRate)
+                .FilterByRange(queryString)
                 .FilterByOpenOnly(queryString.OpenOnly)
                 .FilterByDiscount(queryString.DiscountOnly)
                 .FilterByCategory(queryString.CategoryId)
                 .FilterByCountry(queryString.CountryId)
                 .FilterByState(queryString.StateId)
                 .FilterByCity(queryString.CityId)
-                .Sort(queryString.OrderBy!);
+                .Sort(queryString.OrderBy);
                 
 
             var count = await query.CountAsync();

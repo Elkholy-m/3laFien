@@ -8,7 +8,7 @@ public record class PlaceQueryString : QueryString
     public decimal MaxPrice { get; set; } = int.MaxValue;
 
     [BindNever]
-    public bool ValidPriceRange => MinPrice < MaxPrice;
+    public bool ValidPriceRange => MinPrice < MaxPrice && MinPrice > -1;
 
     public float MinRate { get; set; } = 0;
 

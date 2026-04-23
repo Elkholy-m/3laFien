@@ -1,4 +1,5 @@
 using Entities.Models;
+using Shared.DTO;
 using System.Linq.Dynamic.Core;
 
 namespace Repository.Extensions;
@@ -17,12 +18,19 @@ public static class PlaceExtensionsQuery
 
     // === Filtering By Price Range And Min Rate ===
     public static IQueryable<Place> FilterByRange(this IQueryable<Place> query,
-            decimal minPrice, decimal maxPrice, float minRate)
+            PlaceQueryString queryString)
     {
-       return query.Where(place =>
-        minPrice <= place.Price - (place.Price * place.DiscountPercentage / 100) &&
-        maxPrice >= place.Price - (place.Price * place.DiscountPercentage / 100) &&
-        minRate <= place.Rate);
+        if (queryString.ValidPriceRange) {
+            query = query.Where(place =>
+                    queryString.MinPrice <= place.Price - (place.Price * place.DiscountPercentage / 100) &&
+                    queryString.MaxPrice >= place.Price - (place.Price * place.DiscountPercentage / 100));
+        }
+        
+        if (queryString.ValidMinRate) {
+            query = query.Where(place => queryString.MinRate <= place.Rate);
+        }
+
+        return query;
     }
 
     // === Filter The Open Only Places ===
